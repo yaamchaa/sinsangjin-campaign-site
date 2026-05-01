@@ -3,9 +3,22 @@
  * Editorial Civic Design — 신문 인덱스 + 매거진 카드 혼합
  * 카테고리 필터 + 카드 그리드 + 외부 링크
  */
-import { useMemo, useState } from "react";
-import { trpc } from "@/lib/trpc";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, FileText, Mic, Newspaper, Play } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+
+type NewsCategory = "press" | "interview" | "media" | "video";
+
+type NewsItem = {
+  id: string;
+  title: string;
+  summary: string | null;
+  link: string | null;
+  source: string | null;
+  category: NewsCategory | null;
+  published_at: string | null;
+  status: string | null;
+};
 
 const FILTERS = [
   { v: "all", label: "전체", en: "All" },
@@ -36,15 +49,52 @@ const CATEGORY_COLOR: Record<string, string> = {
   video: "var(--color-gold)",
 };
 
+function formatDate(dateStr: string | null) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+  return {
+    monthDay: d.toLocaleDateString("ko-KR", {
+      month: "2-digit",
+      day: "2-digit",
+    }),
+    year: d.getFullYear(),
+  };
+}
+
 export default function Newsroom() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["v"]>("all");
-  const newsQuery = trpc.news.list.useQuery();
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorText, setErrorText] = useState("");
+
+  useEffect(() => {
+    loadNews();
+  }, []);
+
+  async function loadNews() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("news")
+      .select("id, title, summary, link, source, category, published_at, status")
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
+
+    if (error) {
+      setErrorText(error.message);
+      setNews([]);
+      setLoading(false);
+      return;
+    }
+
+    setNews((data ?? []) as NewsItem[]);
+    setLoading(false);
+  }
 
   const filtered = useMemo(() => {
-    const items = newsQuery.data ?? [];
-    if (filter === "all") return items;
-    return items.filter((n) => n.category === filter);
-  }, [filter, newsQuery.data]);
+    if (filter === "all") return news;
+    return news.filter((n) => n.category === filter);
+  }, [filter, news]);
 
   const featured = filtered[0];
   const rest = filtered.slice(1);
@@ -66,8 +116,7 @@ export default function Newsroom() {
                 <span style={{ color: "var(--color-brick)" }}>읽히는</span> 약속.
               </h1>
               <p className="mt-6 max-w-xl text-[17px] leading-[1.8] text-foreground/80">
-                보도자료, 언론 인터뷰, 시정 영상까지 — 신상진 캠프의 모든 공식
-                기록을 한곳에서 확인하실 수 있습니다.
+                보도자료, 언론 인터뷰, 시정 영상까지 — 신상진 캠프의 모든 공식 기록을 한곳에서 확인하실 수 있습니다.
               </p>
             </div>
             <div className="lg:col-span-4">
@@ -77,9 +126,12 @@ export default function Newsroom() {
                 </div>
                 <div className="mt-4 space-y-1 text-sm text-foreground/80">
                   <div>언론 문의 · 신상진 캠프 공보팀</div>
-                  <div className="font-editorial italic text-muted-foreground">
+                  <a
+                    href="mailto:press@seongnam2026.kr"
+                    className="font-editorial italic text-muted-foreground"
+                  >
                     press@seongnam2026.kr
-                  </div>
+                  </a>
                 </div>
               </div>
             </div>
@@ -88,7 +140,10 @@ export default function Newsroom() {
       </section>
 
       {/* ============== FILTER BAR ============== */}
-      <section className="border-b border-ink/15 sticky top-[72px] z-20" style={{ background: "var(--color-paper)" }}>
+      <section
+        className="border-b border-ink/15 sticky top-[72px] z-20"
+        style={{ background: "var(--color-paper)" }}
+      >
         <div className="container py-4 flex items-center gap-2 overflow-x-auto">
           {FILTERS.map((f) => {
             const active = filter === f.v;
@@ -116,13 +171,22 @@ export default function Newsroom() {
       {/* ============== CONTENT ============== */}
       <section>
         <div className="container py-16 md:py-20">
-          {newsQuery.isLoading && (
+          {loading && (
             <div className="text-sm text-muted-foreground py-12 text-center">
               불러오는 중...
             </div>
           )}
 
-          {!newsQuery.isLoading && filtered.length === 0 && (
+          {!loading && errorText && (
+            <div className="border border-dashed border-ink/20 py-16 text-center">
+              <p className="text-sm text-foreground/70">
+                뉴스를 불러오지 못했습니다.
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{errorText}</p>
+            </div>
+          )}
+
+          {!loading && !errorText && filtered.length === 0 && (
             <div className="border border-dashed border-ink/20 py-16 text-center">
               <Newspaper className="w-7 h-7 mx-auto text-muted-foreground" />
               <p className="mt-4 text-sm text-foreground/70">
@@ -132,12 +196,12 @@ export default function Newsroom() {
           )}
 
           {/* Featured (1 large) */}
-          {featured && (
+          {!loading && !errorText && featured && (
             <article className="border-b border-ink/30 pb-12 mb-12 group">
               <a
                 href={featured.link ?? "#"}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="block"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -150,13 +214,10 @@ export default function Newsroom() {
                         color: "var(--color-brick)",
                       }}
                     >
-                      {new Date(featured.publishedAt).toLocaleDateString("ko-KR", {
-                        month: "2-digit",
-                        day: "2-digit",
-                      })}
+                      {formatDate(featured.published_at).monthDay}
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
-                      {new Date(featured.publishedAt).getFullYear()}
+                      {formatDate(featured.published_at).year}
                     </div>
                   </div>
                   <div className="lg:col-span-9">
@@ -164,15 +225,15 @@ export default function Newsroom() {
                       <span
                         className="inline-flex items-center gap-1 text-[10px] font-bold tracking-[0.18em] px-2 py-1"
                         style={{
-                          color: CATEGORY_COLOR[featured.category],
-                          border: `1px solid ${CATEGORY_COLOR[featured.category]}`,
+                          color: CATEGORY_COLOR[featured.category ?? "media"],
+                          border: `1px solid ${CATEGORY_COLOR[featured.category ?? "media"]}`,
                         }}
                       >
-                        {ICONS[featured.category]}
-                        {CATEGORY_LABEL[featured.category]}
+                        {ICONS[featured.category ?? "media"]}
+                        {CATEGORY_LABEL[featured.category ?? "media"]}
                       </span>
                       <span className="text-xs text-muted-foreground font-editorial italic">
-                        {featured.source}
+                        {featured.source ?? "source"}
                       </span>
                     </div>
                     <h2
@@ -194,56 +255,55 @@ export default function Newsroom() {
           )}
 
           {/* Rest grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/15">
-            {rest.map((n) => (
-              <a
-                key={n.id}
-                href={n.link ?? "#"}
-                target="_blank"
-                rel="noopener"
-                className="group bg-background p-7 md:p-8 hover:bg-ink/[0.02] transition-colors"
-                style={{ background: "var(--color-paper)" }}
-              >
-                <div className="flex items-baseline justify-between mb-5">
-                  <span
-                    className="inline-flex items-center gap-1 text-[10px] font-bold tracking-[0.18em] px-2 py-1"
+          {!loading && !errorText && rest.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/15">
+              {rest.map((n) => (
+                <a
+                  key={n.id}
+                  href={n.link ?? "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group bg-background p-7 md:p-8 hover:bg-ink/[0.02] transition-colors"
+                  style={{ background: "var(--color-paper)" }}
+                >
+                  <div className="flex items-baseline justify-between mb-5">
+                    <span
+                      className="inline-flex items-center gap-1 text-[10px] font-bold tracking-[0.18em] px-2 py-1"
+                      style={{
+                        color: CATEGORY_COLOR[n.category ?? "media"],
+                        border: `1px solid ${CATEGORY_COLOR[n.category ?? "media"]}`,
+                      }}
+                    >
+                      {ICONS[n.category ?? "media"]}
+                      {CATEGORY_LABEL[n.category ?? "media"]}
+                    </span>
+                    <span className="text-xs text-muted-foreground tabular-nums">
+                      {formatDate(n.published_at).monthDay}
+                    </span>
+                  </div>
+                  <h3
+                    className="text-xl leading-[1.35] transition-colors group-hover:text-[var(--color-brick)] line-clamp-3"
                     style={{
-                      color: CATEGORY_COLOR[n.category],
-                      border: `1px solid ${CATEGORY_COLOR[n.category]}`,
+                      color: "var(--color-navy)",
+                      fontFamily: "var(--font-serif)",
+                      fontWeight: 700,
                     }}
                   >
-                    {ICONS[n.category]}
-                    {CATEGORY_LABEL[n.category]}
-                  </span>
-                  <span className="text-xs text-muted-foreground tabular-nums">
-                    {new Date(n.publishedAt).toLocaleDateString("ko-KR", {
-                      month: "2-digit",
-                      day: "2-digit",
-                    })}
-                  </span>
-                </div>
-                <h3
-                  className="text-xl leading-[1.35] transition-colors group-hover:text-[var(--color-brick)] line-clamp-3"
-                  style={{
-                    color: "var(--color-navy)",
-                    fontFamily: "var(--font-serif)",
-                    fontWeight: 700,
-                  }}
-                >
-                  {n.title}
-                </h3>
-                <p className="mt-3 text-sm text-foreground/70 leading-[1.7] line-clamp-3">
-                  {n.summary}
-                </p>
-                <div className="mt-6 flex items-center justify-between text-xs">
-                  <span className="font-editorial italic text-muted-foreground">
-                    {n.source}
-                  </span>
-                  <ArrowUpRight className="w-4 h-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
-              </a>
-            ))}
-          </div>
+                    {n.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-foreground/70 leading-[1.7] line-clamp-3">
+                    {n.summary}
+                  </p>
+                  <div className="mt-6 flex items-center justify-between text-xs">
+                    <span className="font-editorial italic text-muted-foreground">
+                      {n.source ?? "source"}
+                    </span>
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

@@ -7,11 +7,18 @@ import { Link } from "wouter";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import CountdownCalendar from "@/components/CountdownCalendar";
 
-const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663607475701/WrwiXduVcsyo2wTRTGE2Ku/hero_seongnam_skyline-LxJfVbjTXAQ3DWMEwC7nuK.webp";
-const PORTRAIT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663607475701/WrwiXduVcsyo2wTRTGE2Ku/portrait_mayor_style-cVjHtHapELQUC9PM8tsdYr.webp";
-const BUNDANG_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663607475701/WrwiXduVcsyo2wTRTGE2Ku/bundang_redevelopment-fc4XShD8q2EuXEzhZQd6pg.webp";
-
-function CountUp({ end, suffix = "", duration = 1800 }: { end: number; suffix?: string; duration?: number }) {
+const HERO_IMG = "/images/home/BUNDANG.jpeg";
+const PORTRAIT_IMG = "/images/home/hero.jpg";  
+const BUNDANG_IMG = "/images/home/bundang.jpg";
+function CountUp({
+  end,
+  suffix = "",
+  duration = 1800,
+}: {
+  end: number;
+  suffix?: string;
+  duration?: number;
+}) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
@@ -41,11 +48,14 @@ function CountUp({ end, suffix = "", duration = 1800 }: { end: number; suffix?: 
     return () => io.disconnect();
   }, [end, duration]);
 
-  const formatted = Number.isInteger(end)
-    ? Math.floor(value).toLocaleString()
-    : value.toFixed(1);
+  const formatted = Number.isInteger(end) ? Math.floor(value).toLocaleString() : value.toFixed(1);
 
-  return <span ref={ref} className="tnum">{formatted}{suffix}</span>;
+  return (
+    <span ref={ref} className="tnum">
+      {formatted}
+      {suffix}
+    </span>
+  );
 }
 
 export default function Home() {
@@ -67,15 +77,20 @@ export default function Home() {
           {/* Left: headline */}
           <div className="lg:col-span-7">
             <div className="chapter-label">Chapter 00 · Cover Story</div>
-            <h1 className="mt-6 text-[clamp(2.75rem,7vw,5.75rem)] leading-[1.02]" style={{ color: "var(--color-navy)" }}>
-              시작한 일을<br />
-              <span style={{ color: "var(--color-brick)" }}>끝까지</span> 책임지는<br />
+            <h1
+              className="mt-6 text-[clamp(2.75rem,7vw,5.75rem)] leading-[1.02]"
+              style={{ color: "var(--color-navy)" }}
+            >
+              시작한 일을
+              <br />
+              <span style={{ color: "var(--color-brick)" }}>끝까지</span> 책임지는
+              <br />
               시장.
             </h1>
             <p className="mt-8 max-w-xl text-[17px] leading-[1.75] text-foreground/80">
-              대장동 이후 무너진 시스템을 다시 세우고, 재정자립도 전국 1위와
-              공약 이행률 96.1%로 증명한 4년. 이제 성남은 재건축과 재개발,
-              첨단 산업과 복지 체감을 동시에 완성해야 할 시간입니다.
+              대장동 이후 무너진 시스템을 다시 세우고, 재정자립도 전국 1위와 공약 이행률
+              96.1%로 증명한 4년. 이제 성남은 재건축과 재개발, 첨단 산업과 복지 체감을
+              동시에 완성해야 할 시간입니다.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -104,7 +119,10 @@ export default function Home() {
                 { n: 913, s: "천명", label: "성남 시민", sub: "2024.12 기준" },
               ].map((s) => (
                 <div key={s.label} className="border-t border-ink/30 pt-3">
-                  <div className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-black tabular-nums" style={{ color: "var(--color-navy)", fontFamily: "var(--font-serif)" }}>
+                  <div
+                    className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-black tabular-nums"
+                    style={{ color: "var(--color-navy)", fontFamily: "var(--font-serif)" }}
+                  >
                     <CountUp end={s.n} suffix={s.s} />
                   </div>
                   <div className="mt-1 text-sm font-semibold">{s.label}</div>
@@ -122,7 +140,10 @@ export default function Home() {
                 alt="신상진 성남시장"
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(15,42,71,0.6) 100%)" }} />
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(180deg, transparent 55%, rgba(15,42,71,0.6) 100%)" }}
+              />
               <div className="absolute bottom-5 left-5 right-5 text-[var(--color-paper)]">
                 <div className="font-editorial italic text-xs opacity-80 tracking-widest">PORTRAIT · 2026</div>
                 <div className="mt-1 text-lg font-black" style={{ fontFamily: "var(--font-serif)" }}>
@@ -131,7 +152,8 @@ export default function Home() {
               </div>
             </div>
             <div className="mt-4 font-editorial italic text-sm text-muted-foreground leading-relaxed">
-              "무너진 시스템을 다시 세우는 것에서 시작했습니다.<br/>
+              "무너진 시스템을 다시 세우는 것에서 시작했습니다.
+              <br />
               이제 시민이 체감하는 변화로 완성하겠습니다."
             </div>
           </div>
@@ -157,9 +179,8 @@ export default function Home() {
           </div>
           <div className="lg:col-span-8 reveal">
             <p className="pull-quote" style={{ color: "var(--color-ink)" }}>
-              "정치는 구호가 아니라 숫자로 증명해야 합니다.
-              성남은 재정으로 독립했고, 약속으로 신뢰를 회복했으며,
-              이제 <span style={{ color: "var(--color-brick)" }}>재건축과 재개발로 도시의 미래</span>를 완성할 차례입니다."
+              "정치는 구호가 아니라 숫자로 증명해야 합니다. 성남은 재정으로 독립했고, 약속으로
+              신뢰를 회복했으며, 이제 <span style={{ color: "var(--color-brick)" }}>재건축과 재개발로 도시의 미래</span>를 완성할 차례입니다."
             </p>
             <div className="mt-10 flex items-center gap-4">
               <div className="w-12 h-px bg-ink/50" />
@@ -180,15 +201,17 @@ export default function Home() {
             <div className="lg:col-span-5">
               <div className="chapter-label">Chapter 02</div>
               <h2 className="mt-4 text-4xl md:text-5xl" style={{ color: "var(--color-navy)" }}>
-                숫자로 증명한<br/>4년의 시정
+                숫자로 증명한
+                <br />
+                4년의 시정
               </h2>
             </div>
             <div className="lg:col-span-6 lg:col-start-7 reveal">
               <p className="text-[17px] leading-[1.8] text-foreground/80">
-                민선 8기 신상진 시정은 148개 공약 중 127개를 완료 및 정상 추진하며
-                <strong className="text-[var(--color-navy)]"> 이행률 96.1%</strong>를 달성했습니다.
-                동시에 재정자립도 전국 1위라는 재정 건전성과 분당 재건축 선도지구 지정이라는
-                도시 정비의 돌파구를 동시에 만들어냈습니다.
+                민선 8기 신상진 시정은 148개 공약 중 127개를 완료 및 정상 추진하며{" "}
+                <strong className="text-[var(--color-navy)]">이행률 96.1%</strong>를 달성했습니다.
+                동시에 재정자립도 전국 1위라는 재정 건전성과 분당 재건축 선도지구 지정이라는 도시
+                정비의 돌파구를 동시에 만들어냈습니다.
               </p>
             </div>
           </div>
@@ -196,7 +219,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-ink/20">
             {[
               {
-ch: "02 · A",
+                ch: "02 · A",
                 title: "재건축 선도지구 지정",
                 body: "분당 시범단지, 샛별마을, 목련마을, 양지마을 등 4개 단지 2만여 세대의 재건축 특별정비구역 지정을 확정. 1기 신도시 재건축의 첫 장을 성남에서 열었습니다.",
                 metric: "2.0만",
@@ -228,9 +251,7 @@ ch: "02 · A",
                 <h3 className="mt-4 text-2xl" style={{ color: "var(--color-navy)" }}>
                   {item.title}
                 </h3>
-                <p className="mt-3 text-[15px] leading-[1.7] text-foreground/75">
-                  {item.body}
-                </p>
+                <p className="mt-3 text-[15px] leading-[1.7] text-foreground/75">{item.body}</p>
               </div>
             ))}
           </div>
@@ -252,13 +273,15 @@ ch: "02 · A",
             <div className="lg:col-span-5">
               <div className="chapter-label">Chapter 03 · Districts</div>
               <h2 className="mt-4 text-4xl md:text-5xl" style={{ color: "var(--color-navy)" }}>
-                세 도시,<br/>세 약속.
+                세 도시,
+                <br />
+                세 약속.
               </h2>
             </div>
             <div className="lg:col-span-6 lg:col-start-7 reveal">
               <p className="text-[17px] leading-[1.8] text-foreground/80">
-                수정·중원·분당. 성남의 세 지역구는 서로 다른 역사와 현안을 가집니다.
-                우리는 하나의 구호가 아닌, 세 개의 맞춤형 약속으로 답합니다.
+                수정·중원·분당. 성남의 세 지역구는 서로 다른 역사와 현안을 가집니다. 우리는 하나의
+                구호가 아닌, 세 개의 맞춤형 약속으로 답합니다.
               </p>
             </div>
           </div>
@@ -272,7 +295,10 @@ ch: "02 · A",
                   alt="분당 재건축 현장"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-[var(--color-paper)]" style={{ background: "linear-gradient(0deg, rgba(15,42,71,0.85), transparent)" }}>
+                <div
+                  className="absolute bottom-0 left-0 right-0 p-6 text-[var(--color-paper)]"
+                  style={{ background: "linear-gradient(0deg, rgba(15,42,71,0.85), transparent)" }}
+                >
                   <div className="font-editorial italic text-xs opacity-80 tracking-widest">FIELD NOTE</div>
                   <div className="mt-1 text-lg font-black" style={{ fontFamily: "var(--font-serif)" }}>
                     분당구 — 재건축의 최전선
@@ -306,16 +332,12 @@ ch: "02 · A",
                 <div key={d.code} className="reveal group border-t border-ink/30 pt-6">
                   <div className="flex items-baseline justify-between gap-4">
                     <div className="chapter-label">{d.code}</div>
-                    <div className="text-xs text-muted-foreground tabular-nums">
-                      인구 {d.pop}명
-                    </div>
+                    <div className="text-xs text-muted-foreground tabular-nums">인구 {d.pop}명</div>
                   </div>
                   <h3 className="mt-3 text-2xl transition-colors group-hover:text-[var(--color-brick)]" style={{ color: "var(--color-navy)" }}>
                     {d.title}
                   </h3>
-                  <p className="mt-2 text-[15px] leading-[1.7] text-foreground/75">
-                    {d.body}
-                  </p>
+                  <p className="mt-2 text-[15px] leading-[1.7] text-foreground/75">{d.body}</p>
                 </div>
               ))}
               <Link href="/analysis" className="link-underline text-sm font-medium inline-flex items-center gap-1 mt-2">
@@ -330,24 +352,34 @@ ch: "02 · A",
           CHAPTER 04 — CTA / Skyline full-bleed
       ========================================================= */}
       <section className="relative" style={{ background: "var(--color-navy)" }}>
-        <div className="absolute inset-0 opacity-35">
+        <div className="absolute inset-0 opacity-95">
           <img src={HERO_IMG} alt="성남 스카이라인" className="w-full h-full object-cover" />
         </div>
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,42,71,0.5), rgba(15,42,71,0.95))" }} />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(180deg, rgba(15,42,71,0.5), rgba(15,42,71,0.95))" }}
+        />
 
         <div className="relative container py-28 md:py-40 text-[var(--color-paper)]">
           <div className="max-w-4xl">
-            <div className="chapter-label" style={{ color: "var(--color-gold)" }}>Chapter 04 · The Promise</div>
+            <div className="chapter-label" style={{ color: "var(--color-gold)" }}>
+              Chapter 04 · The Promise
+            </div>
             <h2 className="mt-6 text-[clamp(2.5rem,6vw,5rem)] leading-[1.05]" style={{ color: "var(--color-paper)" }}>
-              성남의 미래,<br/>
+              성남의 미래,
+              <br />
               <span style={{ color: "var(--color-gold)" }}>완성할 시간</span>입니다.
             </h2>
-            <p className="mt-8 text-lg leading-[1.8] opacity-85 max-w-2xl">
-              2026년 6월 3일, 시민 여러분의 한 표가 성남의 다음 4년을 결정합니다.
-              검증된 행정, 책임지는 리더십, 시민이 체감하는 변화로 답하겠습니다.
+            <p className="mt-8 text-lg leading-[1.8] opacity-100 max-w-2xl">
+              2026년 6월 3일, 시민 여러분의 한 표가 성남의 다음 4년을 결정합니다. 검증된
+              행정, 책임지는 리더십, 시민이 체감하는 변화로 답하겠습니다.
             </p>
             <div className="mt-12 flex flex-wrap gap-5">
-              <Link href="/pledges" className="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold" style={{ background: "var(--color-brick)", color: "var(--color-paper)", letterSpacing: "0.05em" }}>
+              <Link
+                href="/pledges"
+                className="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold"
+                style={{ background: "var(--color-brick)", color: "var(--color-paper)", letterSpacing: "0.05em" }}
+              >
                 5대 공약 전문 보기
                 <ArrowUpRight className="w-5 h-5" />
               </Link>

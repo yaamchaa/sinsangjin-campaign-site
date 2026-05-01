@@ -1,13 +1,13 @@
 /**
- * 시민의 목소리 (정책 제안 + 시민 제보)
- * Editorial Civic Design
- * - 상단: 매거진 표지형 인트로
- * - 좌측: 제안 작성 폼 / 우측: 최근 제안 목록
+ * 시민의 목소리
+ * - 시민 제안 등록
+ * - 공개된 제안 목록 조회
+ * - 관리자 답변(answer) 노출
  */
-import { useState } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { trpc } from "@/lib/trpc";
-import { getLoginUrl } from "@/const";
+import { useEffect, useMemo, useState } from "react";
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+import { getCitizenLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { ArrowUpRight, MessageSquareText, ShieldCheck } from "lucide-react";
 
@@ -49,68 +49,235 @@ const DISTRICT_LABEL: Record<string, string> = {
   etc: "기타·전체",
 };
 
+type DistrictValue = (typeof DISTRICTS)[number]["v"];
+type CategoryValue = (typeof CATEGORIES)[number]["v"];
+
+type VoiceItem = {
+  id: string;
+  user_id: string | null;
+  district: string;
+  category: string;
+  title: string;
+  content: string;
+  status: string;
+  author_name: string | null;
+  author_email: string | null;
+  answer: string | null;
+  answered_by: string | null;
+  answered_at: string | null;
+  source: string | null;
+  external_id: string | null;
+  published: boolean | null;
+  is_private: boolean | null;
+  created_at: string;
+  updated_at: string | null;
+};
+
+type FormState = {
+  district: DistrictValue;
+  category: CategoryValue;
+  title: string;
+  content: string;
+};
+
+function getDisplayName(user: User | null): string {
+  if (!user) return "";
+  const metadata = user.user_metadata as Record<string, unknown> | undefined;
+  const nameFromMetadata = metadata?.name;
+  if (typeof nameFromMetadata === "string" && nameFromMetadata.trim()) {
+    return nameFromMetadata.trim();
+  }
+  if (user.email) return user.email;
+  return "시민";
+}
+
 export default function Voice() {
-  const { isAuthenticated, user } = useAuth();
-  const utils = trpc.useUtils();
-
-  const proposalsQuery = trpc.proposals.list.useQuery();
-  const createMutation = trpc.proposals.create.useMutation({
-    onSuccess: () => {
-      toast.success("제안이 접수되었습니다", {
-        description: "신상진 캠프에서 신중하게 검토하겠습니다.",
-      });
-      setForm({
-        district: "etc",
-        category: "etc",
-        title: "",
-        content: "",
-      });
-      utils.proposals.list.invalidate();
-    },
-    onError: (e) => {
-      toast.error("제출 실패", { description: e.message });
-    },
-  });
-
-  const [form, setForm] = useState<{
-    district: (typeof DISTRICTS)[number]["v"];
-    category: (typeof CATEGORIES)[number]["v"];
-    title: string;
-    content: string;
-  }>({
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [items, setItems] = useState<VoiceItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [form, setForm] = useState<FormState>({
     district: "etc",
     category: "etc",
     title: "",
     content: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isAuthenticated = useMemo(() => Boolean(authUser), [authUser]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function initialize() {
+      await Promise.all([checkCurrentUser(mounted), loadVoices(mounted)]);
+    }
+
+    void initialize();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      setAuthUser(session?.user ?? null);
+      setAuthChecked(true);
+    });
+
+    const channel = supabase
+      .channel("voice-messages-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "voice_messages" },
+        async () => {
+          await loadVoices(mounted);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+      void supabase.removeChannel(channel);
+    };
+  }, []);
+
+  async function checkCurrentUser(mounted = true) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!mounted) return;
+    setAuthUser(user ?? null);
+    setAuthChecked(true);
+  }
+
+  async function loadVoices(mounted = true) {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("voice_messages")
+      .select("*")
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (!mounted) return;
+
+    if (error) {
+      toast.error("시민의 목소리를 불러오지 못했습니다", {
+        description: error.message,
+      });
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+
+    setItems(((data ?? []) as VoiceItem[]).filter(Boolean));
+    setLoading(false);
+  }
+
+  function resetForm() {
+    setForm({
+      district: "etc",
+      category: "etc",
+      title: "",
+      content: "",
+    });
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (!authChecked) {
+      toast("로그인 상태를 확인 중입니다", {
+        description: "잠시 후 다시 시도해 주세요.",
+      });
+      return;
+    }
+
     if (!isAuthenticated) {
       toast("로그인이 필요합니다", {
         description: "본인 확인 후 제안을 등록할 수 있습니다.",
         action: {
           label: "로그인",
-          onClick: () => (window.location.href = getLoginUrl()),
+          onClick: () => {
+            window.location.href = getCitizenLoginUrl("/voice");
+          },
         },
       });
       return;
     }
-    if (form.title.trim().length < 2 || form.content.trim().length < 10) {
+
+    const trimmedTitle = form.title.trim();
+    const trimmedContent = form.content.trim();
+
+    if (trimmedTitle.length < 2 || trimmedContent.length < 10) {
       toast.error("내용을 조금 더 채워주세요", {
         description: "제목 2자 이상 / 내용 10자 이상 입력 부탁드립니다.",
       });
       return;
     }
-    createMutation.mutate(form);
-  };
+
+    setSubmitting(true);
+
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError) throw userError;
+
+      if (!user) {
+        toast.error("로그인 정보가 확인되지 않았습니다", {
+          description: "다시 로그인 후 시도해 주세요.",
+        });
+        window.location.href = getCitizenLoginUrl("/voice");
+        return;
+      }
+
+      const authorName = getDisplayName(user);
+      const authorEmail = user.email ?? null;
+
+      const payload = {
+        user_id: user.id,
+        district: form.district,
+        category: form.category,
+        title: trimmedTitle,
+        content: trimmedContent,
+        status: "pending",
+        author_name: authorName || "익명 시민",
+        author_email: authorEmail,
+        source: "citizen",
+        published: false,
+        is_private: true,
+      };
+
+      const { error } = await supabase
+        .from("voice_messages")
+        .insert([payload])        
+
+      if (error) throw error;
+
+      toast.success("제안이 접수되었습니다", {
+        description: "검토 후 공개 및 답변이 진행됩니다.",
+      });
+
+      resetForm();
+    } catch (error: any) {
+      toast.error("제출 실패", {
+        description: error?.message || "제안 저장 중 오류가 발생했습니다.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="paper-texture">
-      {/* ============== HERO ============== */}
       <section className="border-b border-ink/15">
         <div className="container py-20 md:py-28">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+          <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-12">
             <div className="lg:col-span-8">
               <div className="chapter-label">Citizen · Voice</div>
               <h1
@@ -123,16 +290,17 @@ export default function Voice() {
               </h1>
               <p className="mt-6 max-w-xl text-[17px] leading-[1.8] text-foreground/80">
                 작은 불편, 큰 제안 모두 환영합니다. 시민이 보낸 모든 의견은
-                신상진 캠프 정책팀이 직접 검토하여 답변과 공약 반영을 약속드립니다.
+                신상진 캠프 정책팀이 직접 검토하여 답변과 공약 반영을 진행합니다.
               </p>
             </div>
+
             <div className="lg:col-span-4">
               <div className="border-t border-ink/30 pt-6">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <ShieldCheck className="h-3.5 w-3.5" />
                   <span>How it works</span>
                 </div>
-                <ol className="mt-4 space-y-3 text-sm text-foreground/80 leading-relaxed">
+                <ol className="mt-4 space-y-3 text-sm leading-relaxed text-foreground/80">
                   <li>
                     <strong>01.</strong> 본인 확인을 위해 한 번만 로그인합니다.
                   </li>
@@ -149,129 +317,120 @@ export default function Voice() {
         </div>
       </section>
 
-      {/* ============== FORM + LIST ============== */}
       <section>
-        <div className="container py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* ===== Form ===== */}
+        <div className="container grid grid-cols-1 gap-12 py-20 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <div className="chapter-label">Submit a Proposal</div>
-            <h2
-              className="mt-3 text-3xl md:text-4xl"
-              style={{ color: "var(--color-navy)" }}
-            >
+            <h2 className="mt-3 text-3xl md:text-4xl" style={{ color: "var(--color-navy)" }}>
               새 제안 작성
             </h2>
 
             <form onSubmit={handleSubmit} className="mt-10 space-y-7">
-              {/* District */}
               <div>
-                <label className="block text-xs tracking-[0.18em] uppercase text-muted-foreground font-semibold mb-3">
+                <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   지역구
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {DISTRICTS.map((d) => {
-                    const active = form.district === d.v;
+                  {DISTRICTS.map((district) => {
+                    const active = form.district === district.v;
                     return (
                       <button
-                        key={d.v}
+                        key={district.v}
                         type="button"
-                        onClick={() => setForm((f) => ({ ...f, district: d.v }))}
+                        onClick={() =>
+                          setForm((prev) => ({ ...prev, district: district.v }))
+                        }
                         className="px-4 py-2 text-sm font-medium transition-all"
                         style={{
-                          background: active
-                            ? "var(--color-navy)"
-                            : "transparent",
-                          color: active
-                            ? "var(--color-paper)"
-                            : "var(--color-ink)",
-                          border: `1px solid ${
-                            active ? "var(--color-navy)" : "rgba(0,0,0,0.2)"
-                          }`,
+                          background: active ? "var(--color-navy)" : "transparent",
+                          color: active ? "var(--color-paper)" : "var(--color-ink)",
+                          border:
+                            "1px solid " +
+                            (active ? "var(--color-navy)" : "rgba(0,0,0,0.2)"),
                         }}
                       >
-                        {d.label}
+                        {district.label}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Category */}
               <div>
-                <label className="block text-xs tracking-[0.18em] uppercase text-muted-foreground font-semibold mb-3">
+                <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   카테고리
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((c) => {
-                    const active = form.category === c.v;
+                  {CATEGORIES.map((category) => {
+                    const active = form.category === category.v;
                     return (
                       <button
-                        key={c.v}
+                        key={category.v}
                         type="button"
-                        onClick={() => setForm((f) => ({ ...f, category: c.v }))}
+                        onClick={() =>
+                          setForm((prev) => ({ ...prev, category: category.v }))
+                        }
                         className="px-4 py-2 text-sm font-medium transition-all"
                         style={{
-                          background: active
-                            ? "var(--color-brick)"
-                            : "transparent",
-                          color: active
-                            ? "var(--color-paper)"
-                            : "var(--color-ink)",
-                          border: `1px solid ${
-                            active ? "var(--color-brick)" : "rgba(0,0,0,0.2)"
-                          }`,
+                          background: active ? "var(--color-brick)" : "transparent",
+                          color: active ? "var(--color-paper)" : "var(--color-ink)",
+                          border:
+                            "1px solid " +
+                            (active ? "var(--color-brick)" : "rgba(0,0,0,0.2)"),
                         }}
                       >
-                        {c.label}
+                        {category.label}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Title */}
               <div>
-                <label className="block text-xs tracking-[0.18em] uppercase text-muted-foreground font-semibold mb-3">
+                <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   제목
                 </label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, title: e.target.value }))
+                    setForm((prev) => ({ ...prev, title: e.target.value }))
                   }
                   placeholder="예) 야탑역 출퇴근 혼잡 완화 방안"
-                  className="w-full bg-transparent border-0 border-b-2 border-ink/30 py-3 text-base focus:outline-none focus:border-[var(--color-navy)] transition-colors"
+                  className="w-full border-0 border-b-2 border-ink/30 bg-transparent py-3 text-base transition-colors focus:border-[var(--color-navy)] focus:outline-none"
                   style={{ fontFamily: "var(--font-serif)" }}
                   maxLength={200}
                 />
               </div>
 
-              {/* Content */}
               <div>
-                <label className="block text-xs tracking-[0.18em] uppercase text-muted-foreground font-semibold mb-3">
+                <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   내용
                 </label>
                 <textarea
                   value={form.content}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, content: e.target.value }))
+                    setForm((prev) => ({ ...prev, content: e.target.value }))
                   }
                   placeholder="시민이 직접 겪은 일, 바라는 변화, 구체적인 아이디어를 자유롭게 적어주세요."
                   rows={7}
                   maxLength={2000}
-                  className="w-full bg-transparent border border-ink/20 p-4 text-[15px] leading-[1.7] focus:outline-none focus:border-[var(--color-navy)] transition-colors resize-y"
+                  className="w-full resize-y border border-ink/20 bg-transparent p-4 text-[15px] leading-[1.7] transition-colors focus:border-[var(--color-navy)] focus:outline-none"
                 />
-                <div className="mt-1 text-right text-xs text-muted-foreground tabular-nums">
+                <div className="mt-1 text-right text-xs tabular-nums text-muted-foreground">
                   {form.content.length} / 2000
                 </div>
               </div>
 
-              {/* Submit */}
+              <div className="rounded-md border border-ink/15 bg-black/5 p-4 text-sm leading-[1.7] text-foreground/75">
+                접수된 제안은 검토 후 공개 여부가 결정되며, 개인정보나 민감한 내용이 포함된 경우
+                비공개로 관리될 수 있습니다.
+              </div>
+
               <div className="flex items-center gap-4 pt-2">
                 <button
                   type="submit"
-                  disabled={createMutation.isPending}
+                  disabled={submitting}
                   className="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold tracking-wide transition-all hover:translate-y-[-1px] disabled:opacity-60"
                   style={{
                     background: "var(--color-navy)",
@@ -279,88 +438,131 @@ export default function Voice() {
                     letterSpacing: "0.04em",
                   }}
                 >
-                  {createMutation.isPending ? "전송 중..." : "제안 보내기"}
-                  <ArrowUpRight className="w-4 h-4" />
+                  {submitting ? "전송 중..." : "제안 보내기"}
+                  <ArrowUpRight className="h-4 w-4" />
                 </button>
-                {!isAuthenticated && (
-                  <span className="text-xs text-muted-foreground font-editorial italic">
+
+                {!isAuthenticated && authChecked && (
+                  <span className="font-editorial text-xs italic text-muted-foreground">
                     * 로그인 후 제출 가능합니다
                   </span>
                 )}
-                {isAuthenticated && user?.name && (
-                  <span className="text-xs text-muted-foreground font-editorial italic">
-                    * {user.name} 님으로 제출
+
+                {isAuthenticated && (
+                  <span className="font-editorial text-xs italic text-muted-foreground">
+                    * {getDisplayName(authUser)} 님으로 제출
                   </span>
                 )}
               </div>
             </form>
           </div>
 
-          {/* ===== List ===== */}
           <div className="lg:col-span-7">
-            <div className="flex items-baseline justify-between border-b border-ink/30 pb-3 mb-6">
+            <div className="mb-6 flex items-baseline justify-between border-b border-ink/30 pb-3">
               <div className="chapter-label">Recent Voices</div>
-              <div className="text-xs text-muted-foreground tabular-nums font-editorial italic">
-                {proposalsQuery.data?.length ?? 0} 건
+              <div className="font-editorial text-xs italic tabular-nums text-muted-foreground">
+                {items.length} 건
               </div>
             </div>
 
-            {proposalsQuery.isLoading && (
-              <div className="text-sm text-muted-foreground py-12 text-center">
+            {loading && (
+              <div className="py-12 text-center text-sm text-muted-foreground">
                 불러오는 중...
               </div>
             )}
 
-            {!proposalsQuery.isLoading &&
-              (proposalsQuery.data?.length ?? 0) === 0 && (
-                <div className="border border-dashed border-ink/20 py-16 text-center">
-                  <MessageSquareText className="w-7 h-7 mx-auto text-muted-foreground" />
-                  <p className="mt-4 text-sm text-foreground/70">
-                    아직 등록된 제안이 없습니다.
-                    <br />첫 번째 시민의 목소리가 되어주세요.
-                  </p>
-                </div>
-              )}
+            {!loading && items.length === 0 && (
+              <div className="border border-dashed border-ink/20 py-16 text-center">
+                <MessageSquareText className="mx-auto h-7 w-7 text-muted-foreground" />
+                <p className="mt-4 text-sm text-foreground/70">
+                  아직 공개된 제안이 없습니다.
+                  <br />
+                  첫 번째 시민의 목소리를 남겨주세요.
+                </p>
+              </div>
+            )}
 
-            <ul className="divide-y divide-ink/15">
-              {proposalsQuery.data?.map((p) => (
-                <li key={p.id} className="py-6 group">
-                  <div className="flex items-baseline gap-2 flex-wrap">
-                    <span
-                      className="text-[10px] font-bold tracking-[0.18em] px-2 py-1"
-                      style={{
-                        color: STATUS_LABEL[p.status]?.color,
-                        border: `1px solid ${STATUS_LABEL[p.status]?.color}`,
-                      }}
-                    >
-                      {STATUS_LABEL[p.status]?.label}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {DISTRICT_LABEL[p.district]} · {CATEGORY_LABEL[p.category]}
-                    </span>
-                    <span className="text-xs text-muted-foreground ml-auto tabular-nums font-editorial italic">
-                      {new Date(p.createdAt).toLocaleDateString("ko-KR")}
-                    </span>
-                  </div>
-                  <h3
-                    className="mt-3 text-xl md:text-2xl transition-colors group-hover:text-[var(--color-brick)]"
-                    style={{
-                      color: "var(--color-navy)",
-                      fontFamily: "var(--font-serif)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {p.title}
-                  </h3>
-                  <p className="mt-2 text-[15px] leading-[1.7] text-foreground/75 line-clamp-3">
-                    {p.content}
-                  </p>
-                  <div className="mt-3 text-xs text-muted-foreground font-editorial italic">
-                    — {p.authorName}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {!loading && items.length > 0 && (
+              <ul className="divide-y divide-ink/15">
+                {items.map((item) => {
+                  const statusInfo = STATUS_LABEL[item.status] ?? {
+                    label: item.status,
+                    color: "var(--color-ink)",
+                  };
+
+                  const statusStyle = {
+                    color: statusInfo.color,
+                    border: "1px solid " + statusInfo.color,
+                  };
+
+                  const answeredDate = item.answered_at
+                    ? new Date(item.answered_at).toLocaleDateString("ko-KR")
+                    : "";
+
+                  return (
+                    <li key={item.id} className="group py-6">
+                      <div className="flex flex-wrap items-baseline gap-2">
+                        <span
+                          className="px-2 py-1 text-[10px] font-bold tracking-[0.18em]"
+                          style={statusStyle}
+                        >
+                          {statusInfo.label}
+                        </span>
+
+                        <span className="text-xs text-muted-foreground">
+                          {DISTRICT_LABEL[item.district] ?? item.district} ·{" "}
+                          {CATEGORY_LABEL[item.category] ?? item.category}
+                        </span>
+
+                        <span className="ml-auto font-editorial text-xs italic tabular-nums text-muted-foreground">
+                          {new Date(item.created_at).toLocaleDateString("ko-KR")}
+                        </span>
+                      </div>
+
+                      <h3
+                        className="mt-3 break-words text-xl transition-colors group-hover:text-[var(--color-brick)] md:text-2xl"
+                        style={{
+                          color: "var(--color-navy)",
+                          fontFamily: "var(--font-serif)",
+                          fontWeight: 700,
+                        }}
+                      >
+                        {item.title}
+                      </h3>
+
+                      <p
+                        className="mt-2 min-w-0 whitespace-pre-wrap break-words text-[15px] leading-[1.7] text-foreground/75"
+                        style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+                      >
+                          {item.content}
+                      </p>
+
+                      <div className="mt-3 font-editorial text-xs italic text-muted-foreground">
+                        — {item.author_name || "익명 시민"}
+                      </div>
+
+                          {item.answer && (
+                      <div className="mt-5 overflow-hidden rounded-lg border border-ink/15 bg-white/70 p-4">
+                       <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                         캠프 답변
+                         </div>
+                       <p
+                         className="mt-2 whitespace-pre-wrap break-words text-sm leading-[1.8] text-foreground/80"
+                         style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+                       >
+                          {item.answer}
+                       </p>
+                         <div className="mt-3 text-xs text-muted-foreground">
+                          {item.answered_by || "관리자"}
+                           {answeredDate ? ` · ${answeredDate}` : ""}
+                        </div>
+                       </div>
+                       )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </div>
       </section>

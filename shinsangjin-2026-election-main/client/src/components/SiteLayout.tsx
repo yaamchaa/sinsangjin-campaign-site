@@ -193,7 +193,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               <div className="chapter-label" style={{ color: "var(--color-gold)" }}>Contact</div>
               <ul className="mt-4 space-y-2 text-sm opacity-85">
                 <li>경기도 성남시 중원구 성남대로 997</li>
-                <li>성남시청 · 031-729-2114</li>
+                <li>성남시청 · 031-123-4567</li>
                 <li>선거사무소 개소 예정</li>
               </ul>
               <div className="mt-6 flex gap-4 text-xs font-editorial italic opacity-60">
