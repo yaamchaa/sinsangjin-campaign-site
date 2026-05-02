@@ -62,10 +62,7 @@ function CountUp({
 
 export default function Home() {
   return (
-    <div className="paper-texture">
-      <img src={PORTRAIT_IMG} alt="신상진 성남시장" />
-      <img src={BUNDANG_IMG} alt="분당 재건축 현장" />
-      <img src={HERO_IMG} alt="성남 스카이라인" />
+    <div className="paper-texture">      
 
       {/* =========================================================
           HERO — Editorial Magazine Cover
