@@ -7,9 +7,11 @@ import { Link } from "wouter";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import CountdownCalendar from "@/components/CountdownCalendar";
 
-const HERO_IMG = "/images/home/BUNDANG.jpeg";
-const PORTRAIT_IMG = "/images/home/hero.jpg";  
-const BUNDANG_IMG = "/images/home/bundang.jpg";
+const baseUrl = import.meta.env.BASE_URL;
+const HERO_IMG = `${baseUrl}images/home/BUNDANG.jpeg`;
+const PORTRAIT_IMG = `${baseUrl}images/home/hero.jpg`;
+const BUNDANG_IMG = `${baseUrl}images/home/bundang.jpg`;
+
 function CountUp({
   end,
   suffix = "",
@@ -61,6 +63,10 @@ function CountUp({
 export default function Home() {
   return (
     <div className="paper-texture">
+      <img src={PORTRAIT_IMG} alt="신상진 성남시장" />
+      <img src={BUNDANG_IMG} alt="분당 재건축 현장" />
+      <img src={HERO_IMG} alt="성남 스카이라인" />
+
       {/* =========================================================
           HERO — Editorial Magazine Cover
       ========================================================= */}
