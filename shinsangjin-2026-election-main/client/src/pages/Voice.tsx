@@ -459,7 +459,7 @@ export default function Voice() {
                   * {getDisplayName(authUser)} 님으로 제출
                 </span>
               )}
-            </form>
+            </form>          
           </div>
 
           <div className="lg:col-span-7">
