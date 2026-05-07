@@ -20,10 +20,10 @@ function getReturnTo() {
 
   const returnToFromHash = hashParams.get("returnTo");
   const returnToFromSearch = searchParams.get("returnTo");
-  const returnTo = returnToFromHash || returnToFromSearch || "/sinsangjin-campaign-site/voice";
+  const returnTo = returnToFromHash || returnToFromSearch || "/voice";
 
   if (!returnTo.startsWith("/")) {
-    return "/sinsangjin-campaign-site/voice";
+    return "/voice";
   }
 
   return returnTo;
@@ -34,7 +34,7 @@ function getBaseUrl() {
 }
 
 function getEmailRedirectTo(returnTo: string) {
-  return `${getBaseUrl()}/#/sinsangjin-campaign-site/user-login?returnTo=${encodeURIComponent(returnTo)}`;
+  return `${getBaseUrl()}/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
 }
 
 export default function UserLogin() {
@@ -82,11 +82,11 @@ export default function UserLogin() {
     }
 
     const { error } = await supabase.auth.signInWithOtp({
-  email,
+  email: normalizedEmail,
   options: {
-    emailRedirectTo: "https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=%2Fvoice",
-      },
-    });
+    emailRedirectTo: getEmailRedirectTo(returnTo),
+  },
+});
 
     if (error) {
       setErrorText(error.message || "인증번호 전송에 실패했습니다.");
@@ -136,7 +136,7 @@ export default function UserLogin() {
     setErrorText("");
     setMessage("");
 
-    const redirectTo = `${getBaseUrl()}/#/sinsangjin-campaign-site/user-login?
+    const redirectTo = `${getBaseUrl()}/#/user-login?
     returnTo=${encodeURIComponent(returnTo)}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
