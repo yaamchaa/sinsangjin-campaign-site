@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 
@@ -26,8 +26,8 @@ function getBaseUrl() {
   return `${window.location.origin}/sinsangjin-campaign-site`;
 }
 
-function getEmailRedirectTo(returnTo: string) {
-  return `${getBaseUrl()}/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
+function getEmailRedirectTo() {
+  return `${getBaseUrl()}/`;
 }
 
 export default function UserLogin() {
@@ -35,30 +35,12 @@ export default function UserLogin() {
 
   const returnTo = useMemo(() => getReturnTo(), []);
 
-  const [checking, setChecking] = useState(true);
   const [loading, setLoading] = useState(false);
-
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
-
   const [message, setMessage] = useState("");
   const [errorText, setErrorText] = useState("");
-
-  useEffect(() => {
-    void checkSession();
-  }, []);
-
-  async function checkSession() {
-    const { false } = await supabase.auth.getUser();
-
-    if (data.user) {
-      setLocation(false);
-      return;
-    }
-
-    setChecking(false);
-  }
 
   async function handleSendOtp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -77,7 +59,7 @@ export default function UserLogin() {
     const { error } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: getEmailRedirectTo(returnTo),
+        emailRedirectTo: getEmailRedirectTo(),
       },
     });
 
@@ -129,7 +111,7 @@ export default function UserLogin() {
     setErrorText("");
     setMessage("");
 
-    const redirectTo = `${getBaseUrl()}/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
+    const redirectTo = `${getBaseUrl()}/`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -143,18 +125,6 @@ export default function UserLogin() {
       setLoading(false);
       return;
     }
-  }
-
-  if (checking) {
-    return (
-      <div className="paper-texture">
-        <div className="container py-20">
-          <div className="rounded-xl border border-ink/15 bg-white/70 p-8 text-center">
-            <p className="text-sm text-muted-foreground">로그인 상태 확인 중...</p>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -195,7 +165,10 @@ export default function UserLogin() {
       <section>
         <div className="container py-16 md:py-20">
           <div className="mx-auto max-w-xl rounded-xl border border-ink/15 bg-white/70 p-6 md:p-8">
-            <h2 className="text-2xl font-semibold" style={{ color: "var(--color-navy)" }}>
+            <h2
+              className="text-2xl font-semibold"
+              style={{ color: "var(--color-navy)" }}
+            >
               시민 로그인
             </h2>
 
