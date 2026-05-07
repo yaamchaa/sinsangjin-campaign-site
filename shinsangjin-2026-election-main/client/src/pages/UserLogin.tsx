@@ -8,9 +8,12 @@ function getReturnTo() {
   return returnTo || "/voice";
 }
 
+function getBaseUrl() {
+  return `${window.location.origin}/sinsangjin-campaign-site`;
+}
+
 function getEmailRedirectTo(returnTo: string) {
-  const origin = window.location.origin;
-  return `${origin}/user-login?returnTo=${encodeURIComponent(returnTo)}`;
+  return `${getBaseUrl()}/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
 }
 
 export default function UserLogin() {
@@ -113,9 +116,8 @@ export default function UserLogin() {
     setErrorText("");
     setMessage("");
 
-    const redirectTo = `${window.location.origin}/user-login?returnTo=${encodeURIComponent(
-      returnTo
-    )}`;
+    const redirectTo = `${getBaseUrl()}/#/user-login?
+    returnTo=${encodeURIComponent(returnTo)}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
