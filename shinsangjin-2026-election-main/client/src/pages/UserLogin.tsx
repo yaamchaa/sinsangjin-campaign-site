@@ -82,10 +82,9 @@ export default function UserLogin() {
     }
 
     const { error } = await supabase.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: {
-        emailRedirectTo: getEmailRedirectTo(returnTo),
-        shouldCreateUser: true,
+  email,
+  options: {
+    emailRedirectTo: "https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=%2Fvoice",
       },
     });
 
