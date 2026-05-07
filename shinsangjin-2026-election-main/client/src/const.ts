@@ -1,25 +1,13 @@
 export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
-export const getAdminLoginUrl = () => "/admin-login";
-
-export const getCitizenLoginUrl = (returnTo?: string) => {
-  const fallbackPath = `/user-login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`;
-
+// Generate login URL at runtime so redirect URI reflects the current origin.
+export const getLoginUrl = () => {
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
-
-  if (!oauthPortalUrl || !appId) {
-    return fallbackPath;
-  }
-
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const statePayload = JSON.stringify({
-    returnTo: returnTo || "/voice",
-    role: "citizen",
-  });
-  const state = btoa(statePayload);
+  const state = btoa(redirectUri);
 
-  const url = new URL("/app-auth", oauthPortalUrl);
+  const url = new URL(`${oauthPortalUrl}/app-auth`);
   url.searchParams.set("appId", appId);
   url.searchParams.set("redirectUri", redirectUri);
   url.searchParams.set("state", state);
@@ -27,3 +15,12 @@ export const getCitizenLoginUrl = (returnTo?: string) => {
 
   return url.toString();
 };
+
+export function getCitizenLoginUrl(
+  returnTo = "/sinsangjin-campaign-site/voice"
+): string {
+  return (
+    "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=" +
+    encodeURIComponent(returnTo)
+  );
+}
