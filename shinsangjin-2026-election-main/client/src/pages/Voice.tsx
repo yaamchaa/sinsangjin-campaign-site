@@ -9,6 +9,7 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { ArrowUpRight, MessageSquareText, ShieldCheck } from "lucide-react";
+import { useLocation } from "wouter";
 
 const DISTRICTS = [
   { v: "sujeong", label: "수정구" },
@@ -91,6 +92,7 @@ function getDisplayName(user: User | null): string {
 }
 
 export default function Voice() {
+  const [, setLocation] = useLocation();
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [items, setItems] = useState<VoiceItem[]>([]);
@@ -196,7 +198,7 @@ export default function Voice() {
 
     if (!isAuthenticated) {
       toast("로그인이 필요합니다", {
-        description: "우측 로그인 버튼을 눌러 본인 확인 후 제안을 등록해 주세요.",
+        description: "로그인 버튼을 눌러 본인 확인 후 제안을 등록해 주세요.",
       });
       return;
     }
@@ -223,7 +225,7 @@ export default function Voice() {
 
       if (!user) {
         toast.error("로그인 정보가 확인되지 않았습니다", {
-          description: "우측 로그인 버튼을 눌러 다시 로그인해 주세요.",
+          description: "로그인 버튼을 눌러 다시 로그인해 주세요.",
         });
         setSubmitting(false);
         return;
@@ -435,10 +437,7 @@ export default function Voice() {
 
                 <button
                   type="button"
-                  onClick={() => {
-                   window.location.href =
-                            "https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=%2Fvoice";
-                  }}
+                  onClick={() => setLocation("/user-login?returnTo=%2Fvoice")}
                   className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
                   style={{
                     borderColor: "var(--color-navy)",
@@ -459,7 +458,7 @@ export default function Voice() {
                   * {getDisplayName(authUser)} 님으로 제출
                 </span>
               )}
-            </form>          
+            </form>
           </div>
 
           <div className="lg:col-span-7">
