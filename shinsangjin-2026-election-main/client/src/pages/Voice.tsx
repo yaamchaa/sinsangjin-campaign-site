@@ -201,7 +201,7 @@ export default function Voice() {
         action: {
           label: "로그인",
           onClick: () => {
-            window.location.href = getCitizenLoginUrl("/#/sinsangjin-campaign-site/user-login");
+            window.location.href = getCitizenLoginUrl("/sinsangjin-campaign-site/voice");
           },
         },
       });
@@ -232,7 +232,7 @@ export default function Voice() {
         toast.error("로그인 정보가 확인되지 않았습니다", {
           description: "다시 로그인 후 시도해 주세요.",
         });
-        window.location.href = getCitizenLoginUrl("/#/sinsangjin-campaign-site/user-login");
+        window.location.href = getCitizenLoginUrl("/sinsangjin-campaign-site/voice");
         return;
       }
 
