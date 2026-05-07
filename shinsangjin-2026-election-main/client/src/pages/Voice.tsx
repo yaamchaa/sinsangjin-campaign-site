@@ -431,58 +431,30 @@ export default function Voice() {
       letterSpacing: "0.04em",
     }}
   >
-    {submitting ? "전송 중..." : "제안 내기"}
+    {submitting ? "전송 중..." : "제안 보내기"}
     <ArrowUpRight className="h-4 w-4" />
   </button>
 
-  {!isAuthenticated && authChecked && (
-    <button
-      type="button"
-      onClick={() => {
-        window.location.href =
-          "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
-      }}
-      className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
-      style={{
-        borderColor: "var(--color-navy)",
-        color: "var(--color-navy)",
-        background: "transparent",
-      }}
-    >
-      로그인
-    </button>
-  )}
+  <button
+    type="button"
+    onClick={() => {
+      window.location.href =
+        "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
+    }}
+    className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
+    style={{
+      borderColor: "var(--color-navy)",
+      color: "var(--color-navy)",
+      background: "transparent",
+    }}
+  >
+    로그인
+  </button>
 
-  {isAuthenticated && (
-    <button
-      type="button"
-      onClick={async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-          toast.error("로그아웃에 실패했습니다", {
-            description: error.message,
-          });
-          return;
-        }
-
-        toast.success("로그아웃되었습니다");
-      }}
-      className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
-      style={{
-        borderColor: "var(--color-brick)",
-        color: "var(--color-brick)",
-        background: "transparent",
-      }}
-    >
-      로그아웃
-    </button>
-  )}
-
-  {!isAuthenticated && authChecked && (
-    <span className="font-editorial text-xs italic text-muted-foreground">
-      * 로그인 후 제출 가능합니다
-    </span>
-  )}
+  <span className="font-editorial text-xs italic text-muted-foreground">
+    * 로그인 후 제출 가능합니다
+  </span>
+</div>
 
   {isAuthenticated && (
     <span className="font-editorial text-xs italic text-muted-foreground">
