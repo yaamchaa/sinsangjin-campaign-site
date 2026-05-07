@@ -431,7 +431,7 @@ export default function Voice() {
       letterSpacing: "0.04em",
     }}
   >
-    {submitting ? "전송 중..." : "제안 보내기"}
+    {submitting ? "전송 중..." : "제안 내기"}
     <ArrowUpRight className="h-4 w-4" />
   </button>
 
