@@ -20,7 +20,7 @@ import NotFound from "./pages/NotFound";
 
 function AppRouter() {
   return (
-    <Router hook={useHashLocation}
+    <Router hook={useHashLocation}>
       <SiteLayout>
         <Switch>
           <Route path="/" component={Home} />
