@@ -16,6 +16,6 @@ export const getLoginUrl = () => {
   return url.toString();
 };
 
-export function getCitizenLoginUrl(returnTo = "/voice"): string {
-  return `https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
+export function getCitizenLoginUrl(): string {
+  return `https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login`;
 }
