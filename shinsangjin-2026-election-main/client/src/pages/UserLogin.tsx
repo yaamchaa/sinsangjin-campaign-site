@@ -2,6 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 
+function getHashPath() {
+  const hash = window.location.hash || "";
+  const cleanHash = hash.startsWith("#") ? hash.slice(1) : hash;
+  const [pathPart] = cleanHash.split("?");
+  return pathPart || "/";
+}
+
 function getReturnTo() {
   const hash = window.location.hash || "";
   const hashQueryIndex = hash.indexOf("?");
@@ -13,9 +20,13 @@ function getReturnTo() {
 
   const returnToFromHash = hashParams.get("returnTo");
   const returnToFromSearch = searchParams.get("returnTo");
-  const returnTo = returnToFromHash || returnToFromSearch || "/voice";
+  const returnTo = returnToFromHash || returnToFromSearch || "/sinsangjin-campaign-site/voice";
 
-  return returnTo.startsWith("/") ? returnTo : "/voice";
+  if (!returnTo.startsWith("/")) {
+    return "/sinsangjin-campaign-site/voice";
+  }
+
+  return returnTo;
 }
 
 function getBaseUrl() {
@@ -23,7 +34,7 @@ function getBaseUrl() {
 }
 
 function getEmailRedirectTo(returnTo: string) {
-  return `${getBaseUrl()}/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
+  return `${getBaseUrl()}/#/sinsangjin-campaign-site/user-login?returnTo=${encodeURIComponent(returnTo)}`;
 }
 
 export default function UserLogin() {
@@ -126,7 +137,7 @@ export default function UserLogin() {
     setErrorText("");
     setMessage("");
 
-    const redirectTo = `${getBaseUrl()}/#/user-login?
+    const redirectTo = `${getBaseUrl()}/#/sinsangjin-campaign-site/user-login?
     returnTo=${encodeURIComponent(returnTo)}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
