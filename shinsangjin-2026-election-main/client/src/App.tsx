@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Router } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SiteLayout from "./components/SiteLayout";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -17,26 +18,28 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminNews from "./pages/AdminNews";
 import NotFound from "./pages/NotFound";
 
-function Router() {
+function AppRouter() {
   return (
-    <SiteLayout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/analysis" component={Analysis} />
-        <Route path="/pledges" component={Pledges} />
-        <Route path="/achievements" component={Achievements} />
-        <Route path="/about" component={About} />
-        <Route path="/voice" component={Voice} />
-        <Route path="/newsroom" component={Newsroom} />
+    <Router hook={useHashLocation} base="/sinsangjin-campaign-site">
+      <SiteLayout>
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/analysis" component={Analysis} />
+          <Route path="/pledges" component={Pledges} />
+          <Route path="/achievements" component={Achievements} />
+          <Route path="/about" component={About} />
+          <Route path="/voice" component={Voice} />
+          <Route path="/newsroom" component={Newsroom} />
 
-        <Route path="/user-login" component={UserLogin} />
-        <Route path="/admin-login" component={AdminLogin} />
-        <Route path="/admin-news" component={AdminNews} />
+          <Route path="/user-login" component={UserLogin} />
+          <Route path="/admin-login" component={AdminLogin} />
+          <Route path="/admin-news" component={AdminNews} />
 
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </SiteLayout>
+          <Route path="/404" component={NotFound} />
+          <Route component={NotFound} />
+        </Switch>
+      </SiteLayout>
+    </Router>
   );
 }
 
@@ -46,7 +49,7 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <AppRouter />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
