@@ -195,17 +195,11 @@ export default function Voice() {
     }
 
     if (!isAuthenticated) {
-      toast("로그인이 필요합니다", {
-        description: "본인 확인 후 제안을 등록할 수 있습니다.",
-        action: {
-          label: "로그인",
-          onClick: () => {
-            window.location.href = "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
-          },
-        },
-      });
-      return;
-    }
+  toast("로그인이 필요합니다", {
+    description: "우측 로그인 버튼을 눌러 본인 확인 후 제안을 등록해 주세요.",
+  });
+  return;
+}
 
     const trimmedTitle = form.title.trim();
     const trimmedContent = form.content.trim();
@@ -228,12 +222,12 @@ export default function Voice() {
       if (userError) throw userError;
 
       if (!user) {
-        toast.error("로그인 정보가 확인되지 않았습니다", {
-          description: "다시 로그인 후 시도해 주세요.",
-        });
-        window.location.href = "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
-        return;
-      }
+  toast.error("로그인 정보가 확인되지 않았습니다", {
+    description: "우측 로그인 버튼을 눌러 다시 로그인해 주세요.",
+  });
+  setSubmitting(false);
+  return;
+}
 
       const authorName = getDisplayName(user);
       const authorEmail = user.email ?? null;
@@ -426,35 +420,76 @@ export default function Voice() {
                 비공개로 관리될 수 있습니다.
               </div>
 
-              <div className="flex items-center gap-4 pt-2">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold tracking-wide transition-all hover:translate-y-[-1px] disabled:opacity-60"
-                  style={{
-                    background: "var(--color-navy)",
-                    color: "var(--color-paper)",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {submitting ? "전송 중..." : "제안 보내기"}
-                  <ArrowUpRight className="h-4 w-4" />
-                </button>
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+  <button
+    type="submit"
+    disabled={submitting}
+    className="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold tracking-wide transition-all hover:translate-y-[-1px] disabled:opacity-60"
+    style={{
+      background: "var(--color-navy)",
+      color: "var(--color-paper)",
+      letterSpacing: "0.04em",
+    }}
+  >
+    {submitting ? "전송 중..." : "제안 보내기"}
+    <ArrowUpRight className="h-4 w-4" />
+  </button>
 
-                {!isAuthenticated && authChecked && (
-                  <span className="font-editorial text-xs italic text-muted-foreground">
-                    * 로그인 후 제출 가능합니다
-                  </span>
-                )}
+  {!isAuthenticated && authChecked && (
+    <button
+      type="button"
+      onClick={() => {
+        window.location.href =
+          "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
+      }}
+      className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
+      style={{
+        borderColor: "var(--color-navy)",
+        color: "var(--color-navy)",
+        background: "transparent",
+      }}
+    >
+      로그인
+    </button>
+  )}
 
-                {isAuthenticated && (
-                  <span className="font-editorial text-xs italic text-muted-foreground">
-                    * {getDisplayName(authUser)} 님으로 제출
-                  </span>
-                )}
-              </div>
-            </form>
-          </div>
+  {isAuthenticated && (
+    <button
+      type="button"
+      onClick={async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          toast.error("로그아웃에 실패했습니다", {
+            description: error.message,
+          });
+          return;
+        }
+
+        toast.success("로그아웃되었습니다");
+      }}
+      className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
+      style={{
+        borderColor: "var(--color-brick)",
+        color: "var(--color-brick)",
+        background: "transparent",
+      }}
+    >
+      로그아웃
+    </button>
+  )}
+
+  {!isAuthenticated && authChecked && (
+    <span className="font-editorial text-xs italic text-muted-foreground">
+      * 로그인 후 제출 가능합니다
+    </span>
+  )}
+
+  {isAuthenticated && (
+    <span className="font-editorial text-xs italic text-muted-foreground">
+      * {getDisplayName(authUser)} 님으로 제출
+    </span>
+  )}
+</div>
 
           <div className="lg:col-span-7">
             <div className="mb-6 flex items-baseline justify-between border-b border-ink/30 pb-3">
