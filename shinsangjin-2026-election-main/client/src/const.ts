@@ -20,7 +20,5 @@ export function getCitizenLoginUrl(
   returnTo = "/sinsangjin-campaign-site/voice"
 ): string {
   return (
-    "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=" +
-    encodeURIComponent(returnTo)
-  );
+    "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=${encodeURIComponent(returnTo)}`;
 }
