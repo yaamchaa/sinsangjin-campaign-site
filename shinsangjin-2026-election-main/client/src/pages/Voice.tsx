@@ -186,6 +186,25 @@ export default function Voice() {
     });
   }
 
+    async function handleAuthButtonClick() {
+    if (isAuthenticated) {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        toast.error("로그아웃에 실패했습니다", {
+          description: error.message,
+        });
+        return;
+      }
+
+      toast.success("로그아웃되었습니다.");
+      setLocation("/voice");
+      return;
+    }
+
+    setLocation("/user-login?returnTo=%2Fvoice");
+  }
+  
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -436,17 +455,17 @@ export default function Voice() {
                 </button>
 
                 <button
-                  type="button"
-                  onClick={() => setLocation("/user-login?returnTo=%2Fvoice")}
-                  className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
-                  style={{
-                    borderColor: "var(--color-navy)",
-                    color: "var(--color-navy)",
-                    background: "transparent",
-                  }}
-                >
-                  로그인
-                </button>
+                    type="button"     
+  onClick={() => void handleAuthButtonClick()}
+  className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
+  style={{
+    borderColor: "var(--color-navy)",
+    color: "var(--color-navy)",
+    background: "transparent",
+  }}
+>
+  {isAuthenticated ? "로그아웃" : "로그인"}
+</button>
 
                 <span className="font-editorial text-xs italic text-muted-foreground">
                   * 로그인 후 제출 가능합니다
