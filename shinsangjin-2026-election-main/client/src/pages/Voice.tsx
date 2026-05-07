@@ -437,7 +437,7 @@ export default function Voice() {
                   type="button"
                   onClick={() => {
                    window.location.href =
-                            "https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=%2Fvoice";
+                            "https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login";
                   }}
                   className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
                   style={{
