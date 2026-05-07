@@ -436,8 +436,8 @@ export default function Voice() {
                 <button
                   type="button"
                   onClick={() => {
-                    window.location.href =
-                      "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
+                   window.location.href =
+                            "https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=%2Fvoice";
                   }}
                   className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
                   style={{
