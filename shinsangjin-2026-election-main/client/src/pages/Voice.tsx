@@ -434,7 +434,7 @@ export default function Voice() {
     {submitting ? "전송 중..." : "제안 내기"}
     <ArrowUpRight className="h-4 w-4" />
   </button>
-
+<div className="text-xs text-red-600">DEBUG LOGIN BUTTON AREA</div>
   <button
     type="button"
     onClick={() => {
