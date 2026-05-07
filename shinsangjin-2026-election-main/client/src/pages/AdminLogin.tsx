@@ -18,27 +18,35 @@ export default function AdminLogin() {
   const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
-    checkSession();
+    void checkSession();
   }, []);
 
   async function checkSession() {
-    const { data, error } = await supabase.auth.getUser();
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
 
-    if (error || !data.user) {
+      if (error || !session?.user) {
+        setChecking(false);
+        return;
+      }
+
+      const signedInEmail = session.user.email ?? "";
+
+      if (isAdminEmail(signedInEmail)) {
+        setLocation("/admin-news");
+        return;
+      }
+
+      await supabase.auth.signOut();
+      setErrorText("일반 사용자 계정이 로그인되어 있어 관리자 로그인을 위해 로그아웃했습니다.");
       setChecking(false);
-      return;
+    } catch (error) {
+      console.error("Admin login session check failed:", error);
+      setChecking(false);
     }
-
-    const signedInEmail = data.user.email ?? "";
-
-    if (isAdminEmail(signedInEmail)) {
-      setLocation("/admin-news");
-      return;
-    }
-
-    await supabase.auth.signOut();
-    setErrorText("일반 사용자 계정이 로그인되어 있어 관리자 로그인을 위해 로그아웃했습니다.");
-    setChecking(false);
   }
 
   async function handleLogin(e: React.FormEvent) {
@@ -65,9 +73,12 @@ export default function AdminLogin() {
       return;
     }
 
-    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
 
-    if (userError || !userData.user || !isAdminEmail(userData.user.email)) {
+    if (sessionError || !session?.user || !isAdminEmail(session.user.email)) {
       await supabase.auth.signOut();
       setErrorText("관리자 권한이 확인되지 않아 접근할 수 없습니다.");
       setLoading(false);
