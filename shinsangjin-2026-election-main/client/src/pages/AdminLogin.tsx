@@ -36,8 +36,9 @@ export default function AdminLogin() {
       return;
     }
 
-    setErrorText("현재 로그인된 계정은 관리자 계정이 아닙니다.");
-    setLocation("/voice");
+    await supabase.auth.signOut();
+    setErrorText("일반 사용자 계정이 로그인되어 있어 관리자 로그인을 위해 로그아웃했습니다.");
+    setChecking(false);
   }
 
   async function handleLogin(e: React.FormEvent) {
