@@ -434,7 +434,7 @@ export default function Voice() {
     {submitting ? "전송 중..." : "제안 내기"}
     <ArrowUpRight className="h-4 w-4" />
   </button>
-<div className="text-xs text-red-600">DEBUG LOGIN BUTTON AREA</div>
+
   <button
     type="button"
     onClick={() => {
@@ -456,12 +456,11 @@ export default function Voice() {
   </span>
 </div>
 
-  {isAuthenticated && (
-    <span className="font-editorial text-xs italic text-muted-foreground">
-      * {getDisplayName(authUser)} 님으로 제출
-    </span>
-  )}
-</div>
+{isAuthenticated && (
+  <span className="font-editorial text-xs italic text-muted-foreground">
+    * {getDisplayName(authUser)} 님으로 제출
+  </span>
+)}
 
           <div className="lg:col-span-7">
             <div className="mb-6 flex items-baseline justify-between border-b border-ink/30 pb-3">
