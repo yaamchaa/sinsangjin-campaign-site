@@ -7,6 +7,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { getCitizenLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { ArrowUpRight, MessageSquareText, ShieldCheck } from "lucide-react";
 
@@ -88,15 +89,6 @@ function getDisplayName(user: User | null): string {
   }
   if (user.email) return user.email;
   return "시민";
-}
-
-function getCitizenLoginUrl(
-  returnTo = "/sinsangjin-campaign-site/voice"
-): string {
-  return (
-    "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=" +
-    encodeURIComponent(returnTo)
-  );
 }
 
 export default function Voice() {
@@ -209,7 +201,7 @@ export default function Voice() {
         action: {
           label: "로그인",
           onClick: () => {
-            window.location.href = getCitizenLoginUrl("/sinsangjin-campaign-site/voice");
+            window.location.href = getCitizenLoginUrl("/#/sinsangjin-campaign-site/user-login");
           },
         },
       });
@@ -240,7 +232,7 @@ export default function Voice() {
         toast.error("로그인 정보가 확인되지 않았습니다", {
           description: "다시 로그인 후 시도해 주세요.",
         });
-        window.location.href = getCitizenLoginUrl("/sinsangjin-campaign-site/voice");
+        window.location.href = getCitizenLoginUrl("/#/sinsangjin-campaign-site/user-login");
         return;
       }
 
@@ -263,7 +255,7 @@ export default function Voice() {
 
       const { error } = await supabase
         .from("voice_messages")
-        .insert([payload]);
+        .insert([payload])        
 
       if (error) throw error;
 
@@ -542,30 +534,30 @@ export default function Voice() {
                         className="mt-2 min-w-0 whitespace-pre-wrap break-words text-[15px] leading-[1.7] text-foreground/75"
                         style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                       >
-                        {item.content}
+                          {item.content}
                       </p>
 
                       <div className="mt-3 font-editorial text-xs italic text-muted-foreground">
                         — {item.author_name || "익명 시민"}
                       </div>
 
-                      {item.answer && (
-                        <div className="mt-5 overflow-hidden rounded-lg border border-ink/15 bg-white/70 p-4">
-                          <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                            캠프 답변
-                          </div>
-                          <p
-                            className="mt-2 whitespace-pre-wrap break-words text-sm leading-[1.8] text-foreground/80"
-                            style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-                          >
-                            {item.answer}
-                          </p>
-                          <div className="mt-3 text-xs text-muted-foreground">
-                            {item.answered_by || "관리자"}
-                            {answeredDate ? ` · ${answeredDate}` : ""}
-                          </div>
+                          {item.answer && (
+                      <div className="mt-5 overflow-hidden rounded-lg border border-ink/15 bg-white/70 p-4">
+                       <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                         캠프 답변
+                         </div>
+                       <p
+                         className="mt-2 whitespace-pre-wrap break-words text-sm leading-[1.8] text-foreground/80"
+                         style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+                       >
+                          {item.answer}
+                       </p>
+                         <div className="mt-3 text-xs text-muted-foreground">
+                          {item.answered_by || "관리자"}
+                           {answeredDate ? ` · ${answeredDate}` : ""}
                         </div>
-                      )}
+                       </div>
+                       )}
                     </li>
                   );
                 })}
