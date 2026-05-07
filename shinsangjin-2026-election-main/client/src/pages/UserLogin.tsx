@@ -50,7 +50,7 @@ export default function UserLogin() {
   }, []);
 
   async function checkSession() {
-    const { data } = await supabase.auth.getUser();
+    const { false } = await supabase.auth.getUser();
 
     if (data.user) {
       setLocation(false);
