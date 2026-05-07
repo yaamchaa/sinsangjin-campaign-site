@@ -2,13 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 
-function getHashPath() {
-  const hash = window.location.hash || "";
-  const cleanHash = hash.startsWith("#") ? hash.slice(1) : hash;
-  const [pathPart] = cleanHash.split("?");
-  return pathPart || "/";
-}
-
 function getReturnTo() {
   const hash = window.location.hash || "";
   const hashQueryIndex = hash.indexOf("?");
@@ -82,11 +75,11 @@ export default function UserLogin() {
     }
 
     const { error } = await supabase.auth.signInWithOtp({
-  email: normalizedEmail,
-  options: {
-    emailRedirectTo: getEmailRedirectTo(returnTo),
-  },
-});
+      email: normalizedEmail,
+      options: {
+        emailRedirectTo: getEmailRedirectTo(returnTo),
+      },
+    });
 
     if (error) {
       setErrorText(error.message || "인증번호 전송에 실패했습니다.");
@@ -136,8 +129,7 @@ export default function UserLogin() {
     setErrorText("");
     setMessage("");
 
-    const redirectTo = `${getBaseUrl()}/#/user-login?
-    returnTo=${encodeURIComponent(returnTo)}`;
+    const redirectTo = `${getBaseUrl()}/#/user-login?returnTo=${encodeURIComponent(returnTo)}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -203,10 +195,7 @@ export default function UserLogin() {
       <section>
         <div className="container py-16 md:py-20">
           <div className="mx-auto max-w-xl rounded-xl border border-ink/15 bg-white/70 p-6 md:p-8">
-            <h2
-              className="text-2xl font-semibold"
-              style={{ color: "var(--color-navy)" }}
-            >
+            <h2 className="text-2xl font-semibold" style={{ color: "var(--color-navy)" }}>
               시민 로그인
             </h2>
 
