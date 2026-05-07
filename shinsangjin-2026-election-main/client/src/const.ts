@@ -17,5 +17,5 @@ export const getLoginUrl = () => {
 };
 
 export function getCitizenLoginUrl(): string {
-  return `https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login`;
+  return `https://yaamchaa.github.io/sinsangjin-campaign-site/#/user-login?returnTo=%2Fvoice`;
 }
