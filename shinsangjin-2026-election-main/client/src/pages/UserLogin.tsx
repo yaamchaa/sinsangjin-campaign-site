@@ -53,7 +53,7 @@ export default function UserLogin() {
     const { data } = await supabase.auth.getUser();
 
     if (data.user) {
-      setLocation(returnTo);
+      setLocation(false);
       return;
     }
 
