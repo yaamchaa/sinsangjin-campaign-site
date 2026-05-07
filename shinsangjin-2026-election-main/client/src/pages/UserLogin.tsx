@@ -3,9 +3,19 @@ import { Link, useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 
 function getReturnTo() {
-  const params = new URLSearchParams(window.location.search);
-  const returnTo = params.get("returnTo");
-  return returnTo || "/voice";
+  const hash = window.location.hash || "";
+  const hashQueryIndex = hash.indexOf("?");
+  const hashQuery = hashQueryIndex >= 0 ? hash.substring(hashQueryIndex + 1) : "";
+  const search = window.location.search || "";
+
+  const hashParams = new URLSearchParams(hashQuery);
+  const searchParams = new URLSearchParams(search);
+
+  const returnToFromHash = hashParams.get("returnTo");
+  const returnToFromSearch = searchParams.get("returnTo");
+  const returnTo = returnToFromHash || returnToFromSearch || "/voice";
+
+  return returnTo.startsWith("/") ? returnTo : "/voice";
 }
 
 function getBaseUrl() {
