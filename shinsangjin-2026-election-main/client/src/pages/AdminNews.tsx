@@ -28,16 +28,15 @@ export default function AdminNews() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const email = session?.user?.email ?? "";
 
       if (!session?.user) {
         setIsLoggedIn(false);
         setIsAuthorizedAdmin(false);
         setUserEmail("");
-        setAccessDeniedMessage("");
+        setAccessDeniedMessage("관리자 로그인 후 다시 접근해 주세요.");
         setChecking(false);
-        setLocation("/admin-login");
         return;
       }
 
@@ -49,7 +48,8 @@ export default function AdminNews() {
       setChecking(false);
 
       if (!authorized) {
-        void supabase.auth.signOut();
+        setAccessDeniedMessage("현재 로그인된 계정은 관리자 권한이 없어 접근할 수 없습니다.");
+        await supabase.auth.signOut();
         setLocation("/admin-login");
         return;
       }
@@ -75,9 +75,8 @@ export default function AdminNews() {
         setIsLoggedIn(false);
         setIsAuthorizedAdmin(false);
         setUserEmail("");
-        setAccessDeniedMessage("");
+        setAccessDeniedMessage("관리자 로그인 후 다시 접근해 주세요.");
         setChecking(false);
-        setLocation("/admin-login");
         return;
       }
 
@@ -102,9 +101,8 @@ export default function AdminNews() {
       setIsLoggedIn(false);
       setIsAuthorizedAdmin(false);
       setUserEmail("");
-      setAccessDeniedMessage("");
+      setAccessDeniedMessage("관리자 인증 확인 중 오류가 발생했습니다. 다시 로그인해 주세요.");
       setChecking(false);
-      setLocation("/admin-login");
     }
   }
 
@@ -182,36 +180,14 @@ export default function AdminNews() {
             )}
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              {!isLoggedIn ? (
-                <button
-                  type="button"
-                  onClick={() => setLocation("/admin-login")}
-                  className="inline-flex items-center rounded-md px-5 py-3 text-sm font-semibold text-white"
-                  style={{ background: "var(--color-navy)" }}
-                >
-                  관리자 로그인
-                </button>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    disabled={logoutLoading}
-                    className="inline-flex items-center rounded-md px-5 py-3 text-sm font-semibold text-white disabled:opacity-60"
-                    style={{ background: "var(--color-navy)" }}
-                  >
-                    {logoutLoading ? "로그아웃 중..." : "다른 계정으로 로그인"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setLocation("/voice")}
-                    className="inline-flex items-center rounded-md border border-ink/15 px-5 py-3 text-sm font-semibold"
-                  >
-                    시민목소리로 이동
-                  </button>
-                </>
-              )}
+              <button
+                type="button"
+                onClick={() => setLocation("/admin-login")}
+                className="inline-flex items-center rounded-md px-5 py-3 text-sm font-semibold text-white"
+                style={{ background: "var(--color-navy)" }}
+              >
+                관리자 로그인
+              </button>
 
               <Link
                 href="/newsroom"
@@ -219,6 +195,14 @@ export default function AdminNews() {
               >
                 뉴스룸 보기
               </Link>
+
+              <button
+                type="button"
+                onClick={() => setLocation("/voice")}
+                className="inline-flex items-center rounded-md border border-ink/15 px-5 py-3 text-sm font-semibold"
+              >
+                시민목소리로 이동
+              </button>
             </div>
           </div>
         </div>
