@@ -195,11 +195,11 @@ export default function Voice() {
     }
 
     if (!isAuthenticated) {
-  toast("로그인이 필요합니다", {
-    description: "우측 로그인 버튼을 눌러 본인 확인 후 제안을 등록해 주세요.",
-  });
-  return;
-}
+      toast("로그인이 필요합니다", {
+        description: "우측 로그인 버튼을 눌러 본인 확인 후 제안을 등록해 주세요.",
+      });
+      return;
+    }
 
     const trimmedTitle = form.title.trim();
     const trimmedContent = form.content.trim();
@@ -222,12 +222,12 @@ export default function Voice() {
       if (userError) throw userError;
 
       if (!user) {
-  toast.error("로그인 정보가 확인되지 않았습니다", {
-    description: "우측 로그인 버튼을 눌러 다시 로그인해 주세요.",
-  });
-  setSubmitting(false);
-  return;
-}
+        toast.error("로그인 정보가 확인되지 않았습니다", {
+          description: "우측 로그인 버튼을 눌러 다시 로그인해 주세요.",
+        });
+        setSubmitting(false);
+        return;
+      }
 
       const authorName = getDisplayName(user);
       const authorEmail = user.email ?? null;
@@ -246,9 +246,7 @@ export default function Voice() {
         is_private: true,
       };
 
-      const { error } = await supabase
-        .from("voice_messages")
-        .insert([payload])        
+      const { error } = await supabase.from("voice_messages").insert([payload]);
 
       if (error) throw error;
 
@@ -421,46 +419,48 @@ export default function Voice() {
               </div>
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
-  <button
-    type="submit"
-    disabled={submitting}
-    className="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold tracking-wide transition-all hover:translate-y-[-1px] disabled:opacity-60"
-    style={{
-      background: "var(--color-navy)",
-      color: "var(--color-paper)",
-      letterSpacing: "0.04em",
-    }}
-  >
-    {submitting ? "전송 중..." : "제안 내기"}
-    <ArrowUpRight className="h-4 w-4" />
-  </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold tracking-wide transition-all hover:translate-y-[-1px] disabled:opacity-60"
+                  style={{
+                    background: "var(--color-navy)",
+                    color: "var(--color-paper)",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {submitting ? "전송 중..." : "제안 내기"}
+                  <ArrowUpRight className="h-4 w-4" />
+                </button>
 
-  <button
-    type="button"
-    onClick={() => {
-      window.location.href =
-        "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
-    }}
-    className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
-    style={{
-      borderColor: "var(--color-navy)",
-      color: "var(--color-navy)",
-      background: "transparent",
-    }}
-  >
-    로그인
-  </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.location.href =
+                      "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
+                  }}
+                  className="inline-flex items-center rounded-md border px-5 py-3 text-sm font-semibold transition-all"
+                  style={{
+                    borderColor: "var(--color-navy)",
+                    color: "var(--color-navy)",
+                    background: "transparent",
+                  }}
+                >
+                  로그인
+                </button>
 
-  <span className="font-editorial text-xs italic text-muted-foreground">
-    * 로그인 후 제출 가능합니다
-  </span>
-</div>
+                <span className="font-editorial text-xs italic text-muted-foreground">
+                  * 로그인 후 제출 가능합니다
+                </span>
+              </div>
 
-{isAuthenticated && (
-  <span className="font-editorial text-xs italic text-muted-foreground">
-    * {getDisplayName(authUser)} 님으로 제출
-  </span>
-)}
+              {isAuthenticated && (
+                <span className="font-editorial text-xs italic text-muted-foreground">
+                  * {getDisplayName(authUser)} 님으로 제출
+                </span>
+              )}
+            </form>
+          </div>
 
           <div className="lg:col-span-7">
             <div className="mb-6 flex items-baseline justify-between border-b border-ink/30 pb-3">
@@ -539,30 +539,30 @@ export default function Voice() {
                         className="mt-2 min-w-0 whitespace-pre-wrap break-words text-[15px] leading-[1.7] text-foreground/75"
                         style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                       >
-                          {item.content}
+                        {item.content}
                       </p>
 
                       <div className="mt-3 font-editorial text-xs italic text-muted-foreground">
                         — {item.author_name || "익명 시민"}
                       </div>
 
-                          {item.answer && (
-                      <div className="mt-5 overflow-hidden rounded-lg border border-ink/15 bg-white/70 p-4">
-                       <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                         캠프 답변
-                         </div>
-                       <p
-                         className="mt-2 whitespace-pre-wrap break-words text-sm leading-[1.8] text-foreground/80"
-                         style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-                       >
-                          {item.answer}
-                       </p>
-                         <div className="mt-3 text-xs text-muted-foreground">
-                          {item.answered_by || "관리자"}
-                           {answeredDate ? ` · ${answeredDate}` : ""}
+                      {item.answer && (
+                        <div className="mt-5 overflow-hidden rounded-lg border border-ink/15 bg-white/70 p-4">
+                          <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                            캠프 답변
+                          </div>
+                          <p
+                            className="mt-2 whitespace-pre-wrap break-words text-sm leading-[1.8] text-foreground/80"
+                            style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+                          >
+                            {item.answer}
+                          </p>
+                          <div className="mt-3 text-xs text-muted-foreground">
+                            {item.answered_by || "관리자"}
+                            {answeredDate ? ` · ${answeredDate}` : ""}
+                          </div>
                         </div>
-                       </div>
-                       )}
+                      )}
                     </li>
                   );
                 })}
