@@ -7,7 +7,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { getCitizenLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { ArrowUpRight, MessageSquareText, ShieldCheck } from "lucide-react";
 
@@ -201,7 +200,7 @@ export default function Voice() {
         action: {
           label: "로그인",
           onClick: () => {
-            window.location.href = getCitizenLoginUrl("/sinsangjin-campaign-site/voice");
+            window.location.href = "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
           },
         },
       });
@@ -232,7 +231,7 @@ export default function Voice() {
         toast.error("로그인 정보가 확인되지 않았습니다", {
           description: "다시 로그인 후 시도해 주세요.",
         });
-        window.location.href = getCitizenLoginUrl("/sinsangjin-campaign-site/voice");
+        window.location.href = "https://yaamchaa.github.io/sinsangjin-campaign-site/#/sinsangjin-campaign-site/user-login?returnTo=%2Fsinsangjin-campaign-site%2Fvoice";
         return;
       }
 
