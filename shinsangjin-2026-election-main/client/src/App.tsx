@@ -20,7 +20,7 @@ import NotFound from "./pages/NotFound";
 
 function AppRouter() {
   return (
-    <Router hook={useHashLocation} base="/sinsangjin-campaign-site">
+    <Router hook={useHashLocation}
       <SiteLayout>
         <Switch>
           <Route path="/" component={Home} />
