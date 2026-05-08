@@ -22,12 +22,8 @@ function getReturnTo() {
   return returnTo;
 }
 
-function getBaseUrl() {
-  return `${window.location.origin}/sinsangjin-campaign-site`;
-}
-
 function getEmailRedirectTo() {
-  return `${getBaseUrl()}/`;
+  return "https://sinsangjin-campaign-site.vercel.app/";
 }
 
 export default function UserLogin() {
@@ -111,7 +107,7 @@ export default function UserLogin() {
     setErrorText("");
     setMessage("");
 
-    const redirectTo = `${getBaseUrl()}/`;
+    const redirectTo = "https://sinsangjin-campaign-site.vercel.app/";
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -184,7 +180,7 @@ export default function UserLogin() {
                 className="flex w-full items-center justify-center rounded-md border border-ink/15 bg-white px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-neutral-50 disabled:opacity-60"
               >
                 Google로 로그인
-              </button>              
+              </button>
             </div>
 
             <div className="my-6 flex items-center gap-3">
