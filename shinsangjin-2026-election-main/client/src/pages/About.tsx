@@ -2,7 +2,7 @@
  * Design: "The Architect of Trust" — Editorial Civic
  * About page — 후보 약력, 철학, 발자취
  */
-const PORTRAIT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663607475701/WrwiXduVcsyo2wTRTGE2Ku/portrait_mayor_style-cVjHtHapELQUC9PM8tsdYr.webp";
+const PORTRAIT_IMG = "/images/home/hero.jpg";
 
 const TIMELINE = [
   { year: "2022–", title: "민선 8기 성남시장", body: "공약 이행률 96.1% 달성, 재정자립도 전국 1위 유지, 분당 재건축 선도지구 지정 주도." },
