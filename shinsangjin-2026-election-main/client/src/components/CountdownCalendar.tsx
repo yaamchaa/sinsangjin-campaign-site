@@ -18,10 +18,10 @@ type ScheduleItem = {
 
 const SCHEDULE: ScheduleItem[] = [
   {
-    date: "2026-05-12",
+    date: "2026-05-14",
     label: "후보자 등록 시작",
     category: "official",
-    description: "성남시장 후보 등록 기간 (5/12~5/13)",
+    description: "성남시장 후보 등록 기간 (5/14~5/15)",
   },
   {
     date: "2026-05-21",
