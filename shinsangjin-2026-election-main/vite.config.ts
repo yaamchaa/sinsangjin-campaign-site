@@ -134,7 +134,7 @@ function vitePluginManusDebugCollector(): Plugin {
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
 export default defineConfig({
-  base: "/sinsangjin-campaign-site/",
+  base: "/",
   plugins,
   resolve: {
     alias: {
