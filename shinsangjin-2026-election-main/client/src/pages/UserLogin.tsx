@@ -106,7 +106,7 @@ export default function UserLogin() {
     setLocation(returnTo);
   }
 
-  async function handleSocialLogin(provider: "google" | "kakao") {
+  async function handleSocialLogin(provider: "google") {
     setLoading(true);
     setErrorText("");
     setMessage("");
@@ -173,7 +173,7 @@ export default function UserLogin() {
             </h2>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              이메일 인증번호, Google, Kakao로 로그인할 수 있습니다.
+              이메일 인증번호, Google, 로 로그인할 수 있습니다.
             </p>
 
             <div className="mt-6 grid gap-3">
@@ -184,17 +184,7 @@ export default function UserLogin() {
                 className="flex w-full items-center justify-center rounded-md border border-ink/15 bg-white px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-neutral-50 disabled:opacity-60"
               >
                 Google로 로그인
-              </button>
-
-              <button
-                type="button"
-                onClick={() => void handleSocialLogin("kakao")}
-                disabled={loading}
-                className="flex w-full items-center justify-center rounded-md px-4 py-3 text-sm font-semibold text-[#191919] transition disabled:opacity-60"
-                style={{ background: "#FEE500" }}
-              >
-                Kakao로 로그인
-              </button>
+              </button>              
             </div>
 
             <div className="my-6 flex items-center gap-3">
