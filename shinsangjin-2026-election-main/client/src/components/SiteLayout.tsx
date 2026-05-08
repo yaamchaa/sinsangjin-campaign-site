@@ -104,24 +104,18 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               );
             })}
             <a
-              href="#support"
-              onClick={(e) => {
-                e.preventDefault();
-                import("sonner").then(({ toast }) =>
-                  toast("후원 페이지는 준비 중입니다.", {
-                    description: "곧 오픈 예정이오니 조금만 기다려 주세요.",
-                  })
-                );
-              }}
-              className="inline-flex items-center px-5 py-2 text-sm font-semibold tracking-wide transition-all"
-              style={{
-                background: "var(--color-navy)",
-                color: "var(--color-paper)",
-                letterSpacing: "0.05em",
-              }}
-            >
-              함께하기
-            </a>
+  href="https://sinsangjin.kr/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center px-5 py-2 text-sm font-semibold tracking-wide transition-all"
+  style={{
+    background: "var(--color-navy)",
+    color: "var(--color-paper)",
+    letterSpacing: "0.05em",
+  }}
+>
+  함께하기
+</a>
           </nav>
 
           {/* Mobile menu button */}
