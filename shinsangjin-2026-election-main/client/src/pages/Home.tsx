@@ -118,7 +118,7 @@ export default function Home() {
               {[
                 { n: 97.4, s: "%", label: "공약 이행률", sub: "민선 8기" },
                 { n: 1, s: "위", label: "재정자립도", sub: "전국 지자체" },
-                { n: 0, s: "채무제로"", label: "성남시 채무", sub: "202.01 최종" },
+                { n: 0, s: "채무제로", label: "성남시 채무", sub: "202.01 최종" },
               ].map((s) => (
                 <div key={s.label} className="border-t border-ink/30 pt-3">
                   <div
