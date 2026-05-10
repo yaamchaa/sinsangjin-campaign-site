@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { to: "/", label: "홈", en: "Home" },
   { to: "/about", label: "후보 소개", en: "Candidate" },
   { to: "/achievements", label: "시정 성과", en: "Achievements" },
-  { to: "/pledges", label: "5대 공약", en: "Pledges" },
+  { to: "/pledges", label: "11대 공약", en: "Pledges" },
   { to: "/newsroom", label: "뉴스룸", en: "Newsroom" },
   { to: "/voice", label: "시민의 목소리", en: "Voice" },
 ];
