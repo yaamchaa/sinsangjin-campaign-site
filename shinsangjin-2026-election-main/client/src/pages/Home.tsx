@@ -368,7 +368,7 @@ export default function Home() {
             <div className="chapter-label" style={{ color: "var(--color-gold)" }}>
               Chapter 04 · The Promise
             </div>
-            <h2 className="mt-6 text-[clamp(2.5rem,6vw,5rem)] leading-[1.05]" style={{ color: "var(--color-paper)" }}>
+            <h2 className="mt-6 text-[clamp(2.3rem,5vw,4rem)] leading-[1.05]" style={{ color: "var(--color-paper)" }}>
               성남의 미래,
               <br />
               <span style={{ color: "var(--color-gold)" }}>완성할 시간</span>입니다.
