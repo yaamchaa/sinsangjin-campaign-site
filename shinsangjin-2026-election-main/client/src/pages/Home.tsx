@@ -72,7 +72,7 @@ export default function Home() {
         <div className="container pt-6 pb-4 flex items-center justify-between text-xs font-editorial italic text-muted-foreground">
           <span>Vol. 2026 · No. 01</span>
           <span className="hidden sm:inline">성남시 제9회 전국동시지방선거 · 2026년 6월 3일</span>
-          <span>₩ Free</span>
+          <span>국민의힘</span>
         </div>
         <div className="hairline container" />
 
