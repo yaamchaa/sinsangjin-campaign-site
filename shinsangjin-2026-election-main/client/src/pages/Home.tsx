@@ -96,21 +96,7 @@ export default function Home() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <Link
-                href="/pledges"
-                className="inline-flex items-center gap-2 px-7 py-3.5 text-[15px] font-semibold tracking-wide transition-all hover:translate-y-[-1px]"
-                style={{
-                  background: "var(--color-navy)",
-                  color: "var(--color-paper)",
-                  letterSpacing: "0.04em",
-                }}
-              >
-                5대 공약 읽기
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-              <Link href="/achievements" className="link-underline text-[15px] font-medium" style={{ color: "var(--color-ink)" }}>
-                시정 4년의 성과 →
-              </Link>
+              
             </div>
 
             {/* Quick stats row */}
@@ -372,17 +358,7 @@ export default function Home() {
               행정, 책임지는 리더십, 시민이 체감하는 변화로 답하겠습니다.
             </p>
             <div className="mt-12 flex flex-wrap gap-5">
-              <Link
-                href="/pledges"
-                className="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold"
-                style={{ background: "var(--color-brick)", color: "var(--color-paper)", letterSpacing: "0.05em" }}
-              >
-                5대 공약 전문 보기
-                <ArrowUpRight className="w-5 h-5" />
-              </Link>
-              <Link href="/about" className="link-underline inline-flex items-center px-0 py-4 text-base" style={{ color: "var(--color-paper)" }}>
-                후보 신상진 알아보기 →
-              </Link>
+            
             </div>
           </div>
         </div>
