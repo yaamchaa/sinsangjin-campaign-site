@@ -92,7 +92,7 @@ export default function Home() {
             </h1>
             <p className="mt-8 max-w-xl text-[17px] leading-[1.75] text-foreground/80">
               대장동 이후 무너진 시스템을 다시 세우고, 재정자립도 전국 1위와 공약 이행률
-              96.1%로 증명한 4년. 이제 성남은 재건축과 재개발, 첨단 산업과 복지 체감을
+              97.4%로 증명한 4년. 이제 성남은 재건축과 재개발, 첨단 산업과 복지 체감을
               동시에 완성해야 할 시간입니다.
             </p>
 
@@ -117,9 +117,9 @@ export default function Home() {
             {/* Quick stats row */}
             <div className="mt-16 grid grid-cols-3 gap-4 md:gap-8 max-w-2xl">
               {[
-                { n: 96.1, s: "%", label: "공약 이행률", sub: "민선 8기" },
+                { n: 97.4, s: "%", label: "공약 이행률", sub: "민선 8기" },
                 { n: 1, s: "위", label: "재정자립도", sub: "전국 지자체" },
-                { n: 913, s: "천명", label: "성남 시민", sub: "2024.12 기준" },
+                { n: 채무, s: "0", label: "성남시 채무", sub: "202.01 최종" },
               ].map((s) => (
                 <div key={s.label} className="border-t border-ink/30 pt-3">
                   <div
@@ -150,7 +150,7 @@ export default function Home() {
               <div className="absolute bottom-5 left-5 right-5 text-[var(--color-paper)]">
                 <div className="font-editorial italic text-xs opacity-80 tracking-widest">PORTRAIT · 2026</div>
                 <div className="mt-1 text-lg font-black" style={{ fontFamily: "var(--font-serif)" }}>
-                  신상진 — 제22대 성남시장
+                  신상진 — 민선8기 성남시장
                 </div>
               </div>
             </div>
@@ -211,8 +211,8 @@ export default function Home() {
             </div>
             <div className="lg:col-span-6 lg:col-start-7 reveal">
               <p className="text-[17px] leading-[1.8] text-foreground/80">
-                민선 8기 신상진 시정은 148개 공약 중 127개를 완료 및 정상 추진하며{" "}
-                <strong className="text-[var(--color-navy)]">이행률 96.1%</strong>를 달성했습니다.
+                민선 8기 신상진 시정은 148개 공약 중 134개를 완료 및 정상 추진하며{" "}
+                <strong className="text-[var(--color-navy)]">이행률 97.4%</strong>를 달성했습니다.
                 동시에 재정자립도 전국 1위라는 재정 건전성과 분당 재건축 선도지구 지정이라는 도시
                 정비의 돌파구를 동시에 만들어냈습니다.
               </p>
