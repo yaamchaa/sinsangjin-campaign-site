@@ -9,7 +9,7 @@ import CountdownCalendar from "@/components/CountdownCalendar";
 
 const baseUrl = import.meta.env.BASE_URL;
 const HERO_IMG = `${baseUrl}images/home/BUNDANG.jpeg`;
-const PORTRAIT_IMG = `${baseUrl}images/home/hero.jpg`;
+const PORTRAIT_IMG = `${baseUrl}images/home/home.jpg`;
 const BUNDANG_IMG = `${baseUrl}images/home/bundang.jpg`;
 
 function CountUp({
