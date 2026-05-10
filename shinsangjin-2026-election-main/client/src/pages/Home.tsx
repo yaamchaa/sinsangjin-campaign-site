@@ -5,7 +5,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import CountdownCalendar from "@/components/CountdownCalendar";
 
 const baseUrl = import.meta.env.BASE_URL;
 const HERO_IMG = `${baseUrl}images/home/BUNDANG.jpeg`;
@@ -161,12 +160,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* =========================================================
-          CHAPTER 0.5 — 카운트다운 + 선거 일정 캘린더
-      ========================================================= */}
-      <CountdownCalendar />
+      </section>      
 
       {/* =========================================================
           CHAPTER 01 — 매니페스토 선언
