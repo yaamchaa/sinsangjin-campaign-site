@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { to: "/", label: "홈", en: "Home" },
   { to: "/about", label: "후보 소개", en: "Candidate" },
   { to: "/achievements", label: "시정 성과", en: "Achievements" },
-  { to: "/pledges", label: "5대 공약", en: "Pledges" },  
+  { to: "/pledges", label: "5대 공약", en: "Pledges" },
   { to: "/newsroom", label: "뉴스룸", en: "Newsroom" },
   { to: "/voice", label: "시민의 목소리", en: "Voice" },
 ];
@@ -21,13 +21,11 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   const [progress, setProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [location]);
 
-  // Scroll progress bar
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement;
@@ -40,7 +38,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // IntersectionObserver for .reveal elements
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
@@ -60,7 +57,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Scroll progress */}
       <div className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-transparent">
         <div
           className="h-full transition-[width] duration-150"
@@ -71,7 +67,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         />
       </div>
 
-      {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-background/85 border-b border-ink/10">
         <div className="container flex items-center justify-between h-[72px]">
           <Link href="/" className="flex items-baseline gap-2 group">
@@ -86,7 +81,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             </span>
           </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden xl:flex items-center gap-7">
             {NAV_ITEMS.map((item) => {
               const active = location === item.to;
@@ -103,21 +97,20 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               );
             })}
             <a
-  href="https://sinsangjin.kr/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center px-5 py-2 text-sm font-semibold tracking-wide transition-all"
-  style={{
-    background: "var(--color-navy)",
-    color: "var(--color-paper)",
-    letterSpacing: "0.05em",
-  }}
->
-  함께하기
-</a>
+              href="https://sinsangjin.kr/php/board.php?board=cardnews&command=body&no=32&&body_only=y&button_view=y"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-5 py-2 text-sm font-semibold tracking-wide transition-all"
+              style={{
+                background: "var(--color-navy)",
+                color: "var(--color-paper)",
+                letterSpacing: "0.05em",
+              }}
+            >
+              함께하기
+            </a>
           </nav>
 
-          {/* Mobile menu button */}
           <button
             className="xl:hidden p-2 -mr-2"
             onClick={() => setMenuOpen((v) => !v)}
@@ -127,7 +120,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           </button>
         </div>
 
-        {/* Mobile nav */}
         {menuOpen && (
           <div className="xl:hidden border-t border-ink/10 bg-background">
             <nav className="container py-6 flex flex-col gap-4">
@@ -137,7 +129,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                   href={item.to}
                   className="flex items-baseline justify-between py-2 border-b border-ink/10"
                 >
-                  <span className="text-lg font-serif" style={{ fontFamily: "var(--font-serif)", fontWeight: 700 }}>
+                  <span
+                    className="text-lg font-serif"
+                    style={{ fontFamily: "var(--font-serif)", fontWeight: 700 }}
+                  >
                     {item.label}
                   </span>
                   <span className="font-editorial italic text-xs text-muted-foreground">
@@ -145,6 +140,20 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                   </span>
                 </Link>
               ))}
+
+              <a
+                href="https://sinsangjin.kr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center justify-center px-5 py-3 text-sm font-semibold tracking-wide transition-all"
+                style={{
+                  background: "var(--color-navy)",
+                  color: "var(--color-paper)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                함께하기
+              </a>
             </nav>
           </div>
         )}
@@ -152,8 +161,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
 
       <main className="flex-1">{children}</main>
 
-      {/* Footer */}
-      <footer className="mt-24 border-t border-ink/15" style={{ background: "var(--color-navy)", color: "var(--color-paper)" }}>
+      <footer
+        className="mt-24 border-t border-ink/15"
+        style={{ background: "var(--color-navy)", color: "var(--color-paper)" }}
+      >
         <div className="container py-16">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
             <div className="md:col-span-5">
@@ -161,16 +172,19 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                 Seongnam 2026 · June 3
               </div>
               <h3 className="mt-4 text-3xl md:text-4xl" style={{ color: "var(--color-paper)" }}>
-                성남의 미래를<br/>완성하는 시장
+                성남의 미래를<br />완성하는 시장
               </h3>
               <p className="mt-6 text-sm leading-relaxed opacity-80 max-w-md">
-                검증된 성과, 흔들리지 않는 원칙, 시민이 체감하는 변화.<br/>
+                검증된 성과, 흔들리지 않는 원칙, 시민이 체감하는 변화.
+                <br />
                 시작한 일을 끝까지 책임지는 시장, 신상진과 함께합니다.
               </p>
             </div>
 
             <div className="md:col-span-3">
-              <div className="chapter-label" style={{ color: "var(--color-gold)" }}>Navigation</div>
+              <div className="chapter-label" style={{ color: "var(--color-gold)" }}>
+                Navigation
+              </div>
               <ul className="mt-4 space-y-2 text-sm">
                 {NAV_ITEMS.map((n) => (
                   <li key={n.to}>
@@ -183,7 +197,9 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             </div>
 
             <div className="md:col-span-4">
-              <div className="chapter-label" style={{ color: "var(--color-gold)" }}>Contact</div>
+              <div className="chapter-label" style={{ color: "var(--color-gold)" }}>
+                Contact
+              </div>
               <ul className="mt-4 space-y-2 text-sm opacity-85">
                 <li>경기도 성남시 중원구 성남대로 997</li>
                 <li>성남시청 · 031-123-4567</li>
