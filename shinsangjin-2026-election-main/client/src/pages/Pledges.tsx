@@ -3,7 +3,7 @@
  * Pledges — 11대 핵심 공약 (매거진 기사식 구성)
  */
 const baseUrl = import.meta.env.BASE_URL;
-const PROMISE_IMG = `${baseUrl}images/pledges/promise.jpg`;
+const PROMISE_IMG = `${import.meta.env.BASE_URL}images/home/promise.jpg`;
 
 const PLEDGES = [
   {
