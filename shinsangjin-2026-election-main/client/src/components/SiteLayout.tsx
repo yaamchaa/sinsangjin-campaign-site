@@ -222,7 +222,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   </a>
 
   <a
-    href=https://www.youtube.com/channel/UCBj5_JCVV3B3m2nGGVUNQ7w"
+    href="https://www.youtube.com/channel/UCBj5_JCVV3B3m2nGGVUNQ7w"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="YouTube"
@@ -237,7 +237,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   </a>
 
   <a
-    href=https://www.facebook.com/people/%EC%8B%A0%EC%83%81%EC%A7%84/pfbid02krq9nzAJWGB8M9KK3vATXh15fF6RRqc5ogjNWW9b9oWkwd3Vp1zYE9SnaFcLe2f6l/#"
+    href="https://www.facebook.com/people/%EC%8B%A0%EC%83%81%EC%A7%84/pfbid02krq9nzAJWGB8M9KK3vATXh15fF6RRqc5ogjNWW9b9oWkwd3Vp1zYE9SnaFcLe2f6l/#"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Facebook"
