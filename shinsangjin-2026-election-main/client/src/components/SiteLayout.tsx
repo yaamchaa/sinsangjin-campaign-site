@@ -97,7 +97,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               );
             })}
             <a
-              href="https://sinsangjin.kr/php/board.php?board=cardnews&command=body&no=32&&body_only=y&button_view=y"
+              href="https://sinsangjin.kr"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-5 py-2 text-sm font-semibold tracking-wide transition-all"
