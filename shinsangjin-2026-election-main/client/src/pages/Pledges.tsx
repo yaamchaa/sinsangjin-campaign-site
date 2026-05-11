@@ -2,6 +2,9 @@
  * Design: "The Architect of Trust" — Editorial Civic
  * Pledges — 11대 핵심 공약 (매거진 기사식 구성)
  */
+const baseUrl = import.meta.env.BASE_URL;
+const PROMISE_IMG = `${baseUrl}images/pledges/promise.jpg`;
+
 const PLEDGES = [
   {
     no: "01",
@@ -109,15 +112,54 @@ export default function Pledges() {
     <div className="paper-texture">
       <section className="border-b border-ink/15">
         <div className="container pt-20 pb-16">
-          <div className="chapter-label">Chapter · The Pledges</div>
-          <h1 className="mt-6 text-[clamp(2.75rem,7vw,5.5rem)] leading-[1.02]" style={{ color: "var(--color-navy)" }}>
-            열한 개의<br/>
-            <span style={{ color: "var(--color-brick)" }}>약속</span>.
-          </h1>
-          <p className="mt-8 max-w-2xl text-[17px] leading-[1.8] text-foreground/80">
-            신상진의 다음 4년은 11가지의 구체적인 약속으로 설계됐습니다.
-            각 공약은 추상적 구호가 아닌, 측정 가능한 지표와 구체적인 실행 계획을 포함합니다.
-          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
+            <div className="lg:col-span-7">
+              <div className="chapter-label">Chapter · The Pledges</div>
+              <h1
+                className="mt-6 text-[clamp(2.75rem,7vw,5.5rem)] leading-[1.02]"
+                style={{ color: "var(--color-navy)" }}
+              >
+                열한 개의
+                <br />
+                <span style={{ color: "var(--color-brick)" }}>약속</span>.
+              </h1>
+              <p className="mt-8 max-w-2xl text-[17px] leading-[1.8] text-foreground/80">
+                신상진의 다음 4년은 11가지의 구체적인 약속으로 설계됐습니다.
+                각 공약은 추상적 구호가 아닌, 측정 가능한 지표와 구체적인 실행 계획을 포함합니다.
+              </p>
+            </div>
+
+            <div className="lg:col-span-5 relative">
+              <div className="relative aspect-[3/4] overflow-hidden">
+                <img
+                  src={PROMISE_IMG}
+                  alt="신상진 후보 11대 공약"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, transparent 55%, rgba(15,42,71,0.6) 100%)",
+                  }}
+                />
+                <div className="absolute bottom-5 left-5 right-5 text-[var(--color-paper)]">
+                  <div className="font-editorial italic text-xs opacity-80 tracking-widest">
+                    PLEDGES · 2026
+                  </div>
+                  <div
+                    className="mt-1 text-lg font-black"
+                    style={{ fontFamily: "var(--font-serif)" }}
+                  >
+                    신상진 — 11대 핵심 공약
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 font-editorial italic text-sm text-muted-foreground leading-relaxed">
+                "약속은 선언이 아니라, 시민이 평가할 수 있는 실행 계획이어야 합니다."
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -130,7 +172,6 @@ export default function Pledges() {
                 i < PLEDGES.length - 1 ? "border-b border-ink/20" : ""
               }`}
             >
-              {/* Left: big number */}
               <div className="lg:col-span-3">
                 <div className="font-editorial italic text-sm tracking-widest text-muted-foreground uppercase">
                   Pledge No.
@@ -141,17 +182,29 @@ export default function Pledges() {
                 >
                   {p.no}
                 </div>
-                <div className="mt-6 inline-block px-3 py-1 text-xs font-semibold tracking-widest" style={{ background: "var(--color-paper-warm)", color: "var(--color-navy)", letterSpacing: "0.15em" }}>
+                <div
+                  className="mt-6 inline-block px-3 py-1 text-xs font-semibold tracking-widest"
+                  style={{
+                    background: "var(--color-paper-warm)",
+                    color: "var(--color-navy)",
+                    letterSpacing: "0.15em",
+                  }}
+                >
                   {p.district.toUpperCase()}
                 </div>
               </div>
 
-              {/* Right: content */}
               <div className="lg:col-span-9">
-                <h2 className="text-[clamp(2rem,4vw,3.25rem)]" style={{ color: "var(--color-navy)" }}>
+                <h2
+                  className="text-[clamp(2rem,4vw,3.25rem)]"
+                  style={{ color: "var(--color-navy)" }}
+                >
                   {p.title}
                 </h2>
-                <div className="mt-3 font-editorial italic text-lg md:text-xl" style={{ color: "var(--color-brick)" }}>
+                <div
+                  className="mt-3 font-editorial italic text-lg md:text-xl"
+                  style={{ color: "var(--color-brick)" }}
+                >
                   {p.subtitle}
                 </div>
 
@@ -165,12 +218,13 @@ export default function Pledges() {
                     <div className="font-editorial italic text-xs tracking-widest text-muted-foreground uppercase">
                       Key Metric
                     </div>
-                    <div className="mt-3 text-5xl font-black tabular-nums" style={{ fontFamily: "var(--font-serif)", color: "var(--color-brick)" }}>
+                    <div
+                      className="mt-3 text-5xl font-black tabular-nums"
+                      style={{ fontFamily: "var(--font-serif)", color: "var(--color-brick)" }}
+                    >
                       {p.metric}
                     </div>
-                    <div className="mt-2 text-sm font-semibold">
-                      {p.metricLabel}
-                    </div>
+                    <div className="mt-2 text-sm font-semibold">{p.metricLabel}</div>
                   </div>
                 </div>
               </div>
