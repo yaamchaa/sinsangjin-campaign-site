@@ -336,7 +336,7 @@ export default function Home() {
           CHAPTER 04 — CTA / Skyline full-bleed
       ========================================================= */}
       <section className="relative" style={{ background: "var(--color-navy)" }}>
-        <div className="absolute inset-0 opacity-95">
+        <div className="absolute inset-0 opacity-99">
           <img src={HERO_IMG} alt="성남 스카이라인" className="w-full h-full object-cover" />
         </div>
         <div
