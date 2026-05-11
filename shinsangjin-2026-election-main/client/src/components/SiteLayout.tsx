@@ -205,30 +205,50 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                 <li>성남시청 · 031-123-4567</li>
                 <li>선거사무소 개소 예정</li>
               </ul>
-              <div className="mt-6 flex gap-4 text-xs font-editorial italic opacity-60">
-               <a
+              <div className="mt-6 flex gap-4 opacity-60">
+  <a
     href="https://www.instagram.com/sangjin9937/"
     target="_blank"
     rel="noopener noreferrer"
+    aria-label="Instagram"
     className="hover:opacity-100 transition-opacity"
   >
-    Instagram
+    <img
+      src="https://cdn.simpleicons.org/instagram/ffffff"
+      alt="Instagram"
+      width="18"
+      height="18"
+    />
   </a>
+
   <a
-    href="https://www.youtube.com/channel/UCBj5_JCVV3B3m2nGGVUNQ7w/"
+    href="https://www.youtube.com/"
     target="_blank"
     rel="noopener noreferrer"
+    aria-label="YouTube"
     className="hover:opacity-100 transition-opacity"
   >
-    YouTube
+    <img
+      src="https://cdn.simpleicons.org/youtube/ffffff"
+      alt="YouTube"
+      width="18"
+      height="18"
+    />
   </a>
+
   <a
-    href="https://www.facebook.com/people/%EC%8B%A0%EC%83%81%EC%A7%84/pfbid02krq9nzAJWGB8M9KK3vATXh15fF6RRqc5ogjNWW9b9oWkwd3Vp1zYE9SnaFcLe2f6l/#/"
+    href="https://www.facebook.com/"
     target="_blank"
     rel="noopener noreferrer"
+    aria-label="Facebook"
     className="hover:opacity-100 transition-opacity"
   >
-    Facebook
+    <img
+      src="https://cdn.simpleicons.org/facebook/ffffff"
+      alt="Facebook"
+      width="18"
+      height="18"
+    />
   </a>
 </div>
             </div>
