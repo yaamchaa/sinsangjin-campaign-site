@@ -207,7 +207,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               </ul>
               <div className="mt-6 flex gap-4 text-xs font-editorial italic opacity-60">
                <a
-    href="https://https://www.instagram.com/sangjin9937"
+    href="https://www.instagram.com/sangjin9937/"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:opacity-100 transition-opacity"
@@ -215,7 +215,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     Instagram
   </a>
   <a
-    href="https://https://www.youtube.com/channel/UCBj5_JCVV3B3m2nGGVUNQ7w"
+    href="https://www.youtube.com/channel/UCBj5_JCVV3B3m2nGGVUNQ7w/"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:opacity-100 transition-opacity"
@@ -223,7 +223,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     YouTube
   </a>
   <a
-    href="https://https://www.facebook.com/people/%EC%8B%A0%EC%83%81%EC%A7%84/pfbid02krq9nzAJWGB8M9KK3vATXh15fF6RRqc5ogjNWW9b9oWkwd3Vp1zYE9SnaFcLe2f6l/#"
+    href="https://www.facebook.com/people/%EC%8B%A0%EC%83%81%EC%A7%84/pfbid02krq9nzAJWGB8M9KK3vATXh15fF6RRqc5ogjNWW9b9oWkwd3Vp1zYE9SnaFcLe2f6l/#/"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:opacity-100 transition-opacity"
