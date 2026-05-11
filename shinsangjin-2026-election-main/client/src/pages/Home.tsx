@@ -59,57 +59,9 @@ function CountUp({
   );
 }
 
-function DebtZeroCount() {
-  const [finished, setFinished] = useState(false);
-  const [value, setValue] = useState(9);
-  const ref = useRef<HTMLSpanElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    if (!ref.current) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting && !started.current) {
-            started.current = true;
-            const startTime = performance.now();
-            const duration = 1600;
-
-            const tick = (t: number) => {
-              const p = Math.min((t - startTime) / duration, 1);
-              const eased = 1 - Math.pow(1 - p, 3);
-              const next = 9 * (1 - eased);
-              setValue(next);
-
-              if (p < 1) {
-                requestAnimationFrame(tick);
-              } else {
-                setValue(0);
-                setFinished(true);
-              }
-            };
-
-            requestAnimationFrame(tick);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    io.observe(ref.current);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <span ref={ref} className="tnum">
-      {finished ? "채무 0" : Math.floor(value).toLocaleString()}
-    </span>
-  );
-}
-
 export default function Home() {
-  return (    
+  return (
+    <div className="paper-texture">
 
       {/* =========================================================
           HERO — Editorial Magazine Cover
@@ -152,7 +104,7 @@ export default function Home() {
               {[
                 { n: 97.4, s: "%", label: "공약 이행률", sub: "민선 8기" },
                 { n: 1, s: "위", label: "재정자립도", sub: "전국 지자체" },
-                { n: 0, s: "", label: "성남시 채무", sub: "2026.01 최종", special: true },
+                { n: 0, s: "", prefix: "채무 ", label: "성남시 채무", sub: "2026.01 최종" },
               ].map((s) => (
                 <div key={s.label} className="border-t border-ink/30 pt-3">
                   <div
