@@ -242,7 +242,7 @@ export default function Home() {
 
           <div className="mt-12 text-right">
             <Link href="/achievements" className="link-underline text-sm font-medium inline-flex items-center gap-1">
-              전체 성과 보고서 읽기 <ArrowRight className="w-4 h-4" />
+              
             </Link>
           </div>
         </div>
