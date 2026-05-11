@@ -111,6 +111,7 @@ export default function Home() {
                     className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-black tabular-nums"
                     style={{ color: "var(--color-navy)", fontFamily: "var(--font-serif)" }}
                   >
+                    {s.prefix}
                     <CountUp end={s.n} suffix={s.s} />
                   </div>
                   <div className="mt-1 text-sm font-semibold">{s.label}</div>
