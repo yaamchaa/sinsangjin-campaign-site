@@ -325,7 +325,7 @@ export default function Home() {
                 </div>
               ))}
               <Link href="/analysis" className="link-underline text-sm font-medium inline-flex items-center gap-1 mt-2">
-                지역별 유권자 심층 분석 <ArrowRight className="w-4 h-4" />
+                
               </Link>
             </div>
           </div>
